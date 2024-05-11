@@ -1,4 +1,4 @@
-class Proceso:
+class Process:
     def __init__(self, name,priority,total_time_finish,executed_time,waiting_time,):
         self.name = name
         self.priority = priority
