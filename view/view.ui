@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>789</width>
-    <height>529</height>
+    <width>1246</width>
+    <height>722</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -210,6 +210,9 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
                 </property>
                 <item>
                  <widget class="QTableWidget" name="table_process">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(44, 128, 145);</string>
+                  </property>
                   <column>
                    <property name="text">
                     <string>Proceso</string>
