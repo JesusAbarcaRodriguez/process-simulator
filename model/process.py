@@ -16,7 +16,7 @@ class Process:
 
     def __str__(self):
         return f"Process {self.pid}: {self.name}"
-    
+
     def start(self):
         thread = threading.Thread(target=self.run)
         thread.start()

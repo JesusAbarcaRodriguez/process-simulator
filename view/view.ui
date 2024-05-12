@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>546</width>
-    <height>518</height>
+    <width>789</width>
+    <height>529</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <property name="spacing">
      <number>0</number>
     </property>
@@ -103,7 +103,7 @@
            <string>TERMINAR</string>
           </property>
          </widget>
-         <widget class="QLabel" name="label">
+         <widget class="QLabel" name="project_tittle">
           <property name="geometry">
            <rect>
             <x>10</x>
@@ -133,7 +133,7 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,1">
           <item>
            <widget class="QFrame" name="frame_inferior_izquierdo">
             <property name="styleSheet">
@@ -145,23 +145,102 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <widget class="QLabel" name="label_2">
-             <property name="geometry">
-              <rect>
-               <x>70</x>
-               <y>0</y>
-               <width>101</width>
-               <height>31</height>
-              </rect>
+            <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,10">
+             <property name="spacing">
+              <number>0</number>
              </property>
-             <property name="styleSheet">
-              <string notr="true">color: rgb(20, 200, 220);
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QFrame" name="frame_2">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_4">
+                <item>
+                 <widget class="QLabel" name="label_process">
+                  <property name="styleSheet">
+                   <string notr="true">color: rgb(20, 200, 220);
 font: 87 12pt &quot;Arial Black&quot;;</string>
-             </property>
-             <property name="text">
-              <string>PROCESOS:</string>
-             </property>
-            </widget>
+                  </property>
+                  <property name="text">
+                   <string>PROCESOS:</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="frame_3">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <property name="spacing">
+                 <number>0</number>
+                </property>
+                <property name="leftMargin">
+                 <number>0</number>
+                </property>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QTableWidget" name="table_process">
+                  <column>
+                   <property name="text">
+                    <string>Proceso</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo Esperando</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo total para Terminar</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo Ejecutado</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Prioridad</string>
+                   </property>
+                  </column>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
           <item>
@@ -178,7 +257,7 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
             <widget class="QLabel" name="label_3">
              <property name="geometry">
               <rect>
-               <x>80</x>
+               <x>40</x>
                <y>0</y>
                <width>111</width>
                <height>31</height>
