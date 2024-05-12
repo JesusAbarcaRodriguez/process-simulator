@@ -8,3 +8,4 @@ class ProcessState(Enum):
     SUSPENDED_READY = 'suspended_ready'
     SUSPENDED_BLOCKED = 'suspended_blocked'
     TERMINATED = 'terminated'
+    ASSIGN = 'assign'

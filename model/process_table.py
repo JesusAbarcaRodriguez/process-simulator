@@ -1,5 +1,5 @@
 class ProcessTable:
-    def __init__(self):
+    def __init__(self,processes = []):
         self.processes = []
 
     def add_process(self, process):

@@ -133,9 +133,96 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QHBoxLayout" name="horizontalLayout" stretch="2,1">
+         <layout class="QVBoxLayout" name="verticalLayout_6" stretch="1,8">
           <item>
-           <widget class="QFrame" name="frame_inferior_izquierdo">
+           <widget class="QFrame" name="frame_inferior1">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(53,53, 79);</string>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <widget class="QFrame" name="frame_4">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QPushButton" name="pushButton_5">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(20, 200, 220);</string>
+                  </property>
+                  <property name="text">
+                   <string>PushButton</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_4">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(20, 200, 220);</string>
+                  </property>
+                  <property name="text">
+                   <string>PushButton</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_3">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(20, 200, 220);</string>
+                  </property>
+                  <property name="text">
+                   <string>PushButton</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="btn_sort">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(20, 200, 220);</string>
+                  </property>
+                  <property name="text">
+                   <string>Ordenamientos</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton_2">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(20, 200, 220);</string>
+                  </property>
+                  <property name="text">
+                   <string>PushButton</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="pushButton">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(20, 200, 220);</string>
+                  </property>
+                  <property name="text">
+                   <string>PushButton</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_inferior2">
             <property name="styleSheet">
              <string notr="true">background-color: rgb(53,53, 79);</string>
             </property>
@@ -238,43 +325,21 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
                     <string>Prioridad</string>
                    </property>
                   </column>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="frame_inferior_derecho">
-            <property name="styleSheet">
-             <string notr="true">background-color: rgb(53,53, 79);</string>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout">
-             <item>
-              <widget class="QFrame" name="frame_4">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QVBoxLayout" name="verticalLayout_5">
-                <item>
-                 <widget class="QPushButton" name="btn_sort">
-                  <property name="styleSheet">
-                   <string notr="true">background-color: rgb(20, 200, 220);</string>
-                  </property>
-                  <property name="text">
-                   <string>Ordenamientos</string>
-                  </property>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Estado</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tamaño</string>
+                   </property>
+                  </column>
                  </widget>
                 </item>
                </layout>

@@ -3,9 +3,10 @@ import time
 from util.states import ProcessState
 
 class Process:
-    def __init__(self, pid, state, name, priority, to_finish_time, executed_time, waiting_time, mem_limit):
+    def __init__(self, pid, state,size, name, priority, to_finish_time, executed_time, waiting_time, mem_limit):
         self.pid = pid
         self.state = ProcessState(state)
+        self.size = size
         self.name = name
         self.priority = priority
         self.to_finish_time = to_finish_time
