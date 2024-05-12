@@ -11,9 +11,3 @@ class Memory:
         self.current_size -= 1
     def get_process(self, index):
         return self.processes[index]
-    def highest_response_rate():
-        pass
-    def shortest_job_first():
-        pass
-    def priority():
-        pass
