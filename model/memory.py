@@ -1,6 +1,11 @@
 from model.process_table import ProcessTable
 from util.states import ProcessState
+from model.process import Process
 
+#   todo: logic with different types of memory
+#   principal memory 
+#   secondary memory 
+#   virtual memory
 class Memory:
     block_memory_list=[]
     def __init__(self, max_size, current_size,type_memory):
@@ -22,19 +27,26 @@ class Memory:
     def get_process(self, pid):
         return self.process_table.find_process(pid)
 
-    def assign_memory(self,process,block_memory_list):
+    #   todo: should come from secondary memory as (new)
+    #   from secondary_memory_list to primary_memory_list
+    #   delete process from secondary_memory_list
+    #   Assign memory to processes
+    #   order memory blocks by size
+    #   assign memory blocks to processes
+    def assign_memory(self, process: Process, block_memory_list):
         sorted(block_memory_list,key=lambda x: x.size)
         for i in range(0,len(block_memory_list) -1 ):
             for z in range(0,len(process) -1):
-                if block_memory_list[i].proc is None and block_memory_list[i].size >= process[z].size and process[z].state == ProcessState.READY:
+                if block_memory_list[i].proc is None and block_memory_list[i].size >= process[z].size:
                     block_memory_list[i].proc = process[z]
-                    process[z].state = ProcessState.ASSIGN
-        return process,block_memory_list
+                    process[z].admit()
+        return process, block_memory_list
 
+    # todo: new, suspended_ready, suspended_blocked
     def assign_memory_secondary(self,process,block_memory_list):
         sorted(block_memory_list,key=lambda x: x.size)
         for i in range(0,len(block_memory_list) -1 ):
             for z in range(0,len(process) -1):
-                if block_memory_list[i].proc is None and block_memory_list[i].size >= process[z].size and process[z].state == ProcessState.READY:
+                if block_memory_list[i].proc is None and block_memory_list[i].size >= process[z].size:
                     block_memory_list[i].proc = process[z]
         return process,block_memory_list
