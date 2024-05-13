@@ -3,6 +3,7 @@ import time
 from util.states import ProcessState
 
 class Process:
+    # remove state by param
     def __init__(self, pid, state,size, name, priority, to_finish_time, executed_time, waiting_time, mem_limit):
         self.pid = pid
         self.state = ProcessState(state)
@@ -36,6 +37,8 @@ class Process:
                 thread.start()
 
     #   todo: timeout -> (running) -> (ready)
+    #   calculate to_finish_time
+    #   calculate memory size (principal, virtual)
     #   Execute the process
     #   When the process is ready, it will start executing
     def execute(self, event=None):
