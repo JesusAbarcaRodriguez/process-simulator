@@ -12,79 +12,104 @@ from model.orders import third_order
 
 class MainView(QMainWindow):
 
-    process1 = Process(1, ProcessState.NEW,200, "Process 1", 1, 0, 0, 0, 0)
-    process2 = Process(2, ProcessState.NEW, 100,"Process 2", 2, 5, 0, 0,0)
-    process3 = Process(3, ProcessState.NEW, 20,"Process 3", 2, 15, 0, 0, 0)
-    process4 = Process(4, ProcessState.NEW, 40,"Process 4", 1, 7, 0, 0, 0)
-
-    process_list = [process1, process2, process3, process4]
-
-    block1_secondary = BlockMemory(1, 100,None)
-    block2_secondary = BlockMemory(2, 200, None)
-    block3_secondary = BlockMemory(3, 300, None)
-    block4_secondary = BlockMemory(4, 400, None)
-    block5_secondary = BlockMemory(5, 500, None)
-    block6_secondary = BlockMemory(6, 600, None)
-    block7_secondary = BlockMemory(7, 700, None)
-    block8_secondary = BlockMemory(8, 800, None)
-    block9_secondary = BlockMemory(9, 900, None)
-    block10_secondary = BlockMemory(10, 1000, None)
-
-    block_secondary_list = [block1_secondary, block2_secondary, block3_secondary, block4_secondary, block5_secondary, block6_secondary, block7_secondary, block8_secondary, block9_secondary, block10_secondary]
-
-    memory = Memory(10000, 0,"Secondary")
-
-    process,block_secondary_list=memory.assign_memory_secondary(process_list, block_secondary_list)
-
-    block1 = BlockMemory(1, 100,None)
-    block2 = BlockMemory(2, 200, None)
-    block3 = BlockMemory(3, 300, None)
-    block4 = BlockMemory(4, 400, None)
-
-    block_memory_list = [block1, block2, block3, block4]
-
-    memory = Memory(10000, 0,"Primary")
-
-    process_list,block_memory_list =  memory.assign_memory(process_list, block_memory_list)
-
     def __init__(self):  # this
         super(MainView, self).__init__()
         uic.loadUi("view/view.ui", self)
-        self.btn_start.clicked.connect(self.add_process_table)
+        self.btn_start.clicked.connect(self.start_process)
         self.btn_stop.clicked.connect(self.stop_process)
         self.btn_sort.clicked.connect(self.sort_process)
+        self.btn_assign.clicked.connect(self.assign_process)
 
-        self.table_process.setColumnWidth(0, 100)
-        self.table_process.setColumnWidth(1, 197)
-        self.table_process.setColumnWidth(2, 197)
-        self.table_process.setColumnWidth(3, 197)
-        self.table_process.setColumnWidth(4, 197)
-        self.table_process.setColumnWidth(5, 197)
-        self.table_process.setColumnWidth(6, 120)
+        self.table_memory_principal.setColumnWidth(0, 100)
+        self.table_memory_principal.setColumnWidth(1, 197)
+        self.table_memory_principal.setColumnWidth(2, 197)
+        self.table_memory_principal.setColumnWidth(3, 197)
+        self.table_memory_principal.setColumnWidth(4, 197)
+        self.table_memory_principal.setColumnWidth(5, 197)
+        self.table_memory_principal.setColumnWidth(6, 120)
+
+        self.table_memory_secondary.setColumnWidth(0, 100)
+        self.table_memory_secondary.setColumnWidth(1, 197)
+        self.table_memory_secondary.setColumnWidth(2, 197)
+        self.table_memory_secondary.setColumnWidth(3, 197)
+        self.table_memory_secondary.setColumnWidth(4, 197)
+        self.table_memory_secondary.setColumnWidth(5, 197)
+        self.table_memory_secondary.setColumnWidth(6, 120)
         # Verificar si el layout está configurado correctamente
-        self.add_process_table(self.process_list)
         if self.frame_inferior1.layout() is None:
             self.frame_inferior1.setLayout(QtWidgets.QVBoxLayout()) # Configurar un QVBoxLayout
+
     def start_process(self):
-        pass
+        self.process1 = Process(1, ProcessState.NEW, 200, "Process 1", 1, 0, 0, 0, 0)
+        self.process2 = Process(2, ProcessState.NEW, 100, "Process 2", 2, 5, 0, 0, 0)
+        self.process3 = Process(3, ProcessState.NEW, 20, "Process 3", 2, 15, 0, 0, 0)
+        self.process4 = Process(4, ProcessState.NEW, 40, "Process 4", 1, 7, 0, 0, 0)
+
+        self.process_list_secondary_memory = [self.process1, self.process2, self.process3, self.process4]
+
+        self.block1_secondary = BlockMemory(1, 100, None)
+        self.block2_secondary = BlockMemory(2, 200, None)
+        self.block3_secondary = BlockMemory(3, 300, None)
+        self.block4_secondary = BlockMemory(4, 400, None)
+        self.block5_secondary = BlockMemory(5, 500, None)
+        self.block6_secondary = BlockMemory(6, 600, None)
+        self.block7_secondary = BlockMemory(7, 700, None)
+        self.block8_secondary = BlockMemory(8, 800, None)
+        self.block9_secondary = BlockMemory(9, 900, None)
+        self.block10_secondary = BlockMemory(10, 1000, None)
+
+        self.block_secondary_list = [self.block1_secondary, self.block2_secondary, self.block3_secondary, self.block4_secondary, self.block5_secondary, self.block6_secondary, self.block7_secondary, self.block8_secondary, self.block9_secondary, self.block10_secondary]
+        #instance secondary memory
+        self.memory_secondary = Memory(10000, 0, "Secondary")
+        self.process_list_secondary_memory, self.block_secondary_list = self.memory_secondary.assign_memory_secondary(self.process_list_secondary_memory, self.block_secondary_list)
+        self.add_process_table_secondary(self.process_list_secondary_memory)
+    def assign_process(self):
+        self.block1 = BlockMemory(1, 100, None)
+        self.block2 = BlockMemory(2, 200, None)
+        self.block3 = BlockMemory(3, 300, None)
+        self.block4 = BlockMemory(4, 400, None)
+        self.block5 = BlockMemory(5, 500, None)
+
+        self.block_memory_list = [self.block1, self.block2, self.block3, self.block4]
+        #instance primary memory
+        self.memory_principal = Memory(10000, 0, "Primary")
+        self.process_list_primary_memory = []
+        self.process_list_primary_memory, self.block_memory_list,self.process_list_secondary_memory = self.memory_principal.assign_memory(self.process_list_secondary_memory, self.block_memory_list)
+        self.add_process_table_primary(self.process_list_primary_memory)
+        for proc in self.process_list_secondary_memory:
+            print(proc.name)
+        self.add_process_table_secondary(self.process_list_secondary_memory)
     def stop_process(self):
         pass
-
     def sort_process(self):
         self.process_list = third_order(self.process_list)
         self.add_process_table(self.process_list)
 
         pass
 
-    def add_process_table(self, process_list):
-
+    def add_process_table_primary(self, process_list):
         row = 0
-        self.table_process.setRowCount(len(process_list))
+        self.table_memory_principal.setRowCount(len(process_list))
         for pro in process_list:
-            self.table_process.setItem(row, 0, QtWidgets.QTableWidgetItem(str(pro.name)))
-            self.table_process.setItem(row, 1, QtWidgets.QTableWidgetItem(str(pro.waiting_time)))
-            self.table_process.setItem(row, 2, QtWidgets.QTableWidgetItem(str(pro.to_finish_time)))
-            self.table_process.setItem(row, 3, QtWidgets.QTableWidgetItem(str(pro.executed_time)))
-            self.table_process.setItem(row, 4, QtWidgets.QTableWidgetItem(str(pro.priority)))
+            self.table_memory_principal.setItem(row, 0, QtWidgets.QTableWidgetItem(str(pro.name)))
+            self.table_memory_principal.setItem(row, 1, QtWidgets.QTableWidgetItem(str(pro.waiting_time)))
+            self.table_memory_principal.setItem(row, 2, QtWidgets.QTableWidgetItem(str(pro.to_finish_time)))
+            self.table_memory_principal.setItem(row, 3, QtWidgets.QTableWidgetItem(str(pro.executed_time)))
+            self.table_memory_principal.setItem(row, 4, QtWidgets.QTableWidgetItem(str(pro.priority)))
             row += 1
         pass
+    def add_process_table_secondary(self, process_list):
+        self.table_memory_secondary.clearContents()
+        self.table_memory_secondary.setRowCount(0) 
+        if not process_list:
+            self.table_memory_secondary.setRowCount(0)  # Limpiar la tabla si no hay datos
+            return  # Salir de la función ya que no hay elementos que mostrar
+        row = 0
+        self.table_memory_secondary.setRowCount(len(process_list))
+        for pro in process_list:
+            self.table_memory_secondary.setItem(row, 0, QtWidgets.QTableWidgetItem(str(pro.name)))
+            self.table_memory_secondary.setItem(row, 1, QtWidgets.QTableWidgetItem(str(pro.waiting_time)))
+            self.table_memory_secondary.setItem(row, 2, QtWidgets.QTableWidgetItem(str(pro.to_finish_time)))
+            self.table_memory_secondary.setItem(row, 3, QtWidgets.QTableWidgetItem(str(pro.executed_time)))
+            self.table_memory_secondary.setItem(row, 4, QtWidgets.QTableWidgetItem(str(pro.priority)))
+            row += 1

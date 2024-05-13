@@ -196,12 +196,12 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_2">
+                 <widget class="QPushButton" name="btn_assign">
                   <property name="styleSheet">
                    <string notr="true">background-color: rgb(20, 200, 220);</string>
                   </property>
                   <property name="text">
-                   <string>PushButton</string>
+                   <string>Asignar a Memoria Principal</string>
                   </property>
                  </widget>
                 </item>
@@ -232,7 +232,7 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,10">
+            <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,1">
              <property name="spacing">
               <number>0</number>
              </property>
@@ -264,39 +264,12 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
 font: 87 12pt &quot;Arial Black&quot;;</string>
                   </property>
                   <property name="text">
-                   <string>PROCESOS:</string>
+                   <string>MEMORIA PRINCIPAL:</string>
                   </property>
                  </widget>
                 </item>
-               </layout>
-              </widget>
-             </item>
-             <item>
-              <widget class="QFrame" name="frame_3">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="frameShadow">
-                <enum>QFrame::Raised</enum>
-               </property>
-               <layout class="QHBoxLayout" name="horizontalLayout_3">
-                <property name="spacing">
-                 <number>0</number>
-                </property>
-                <property name="leftMargin">
-                 <number>0</number>
-                </property>
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <property name="rightMargin">
-                 <number>0</number>
-                </property>
-                <property name="bottomMargin">
-                 <number>0</number>
-                </property>
                 <item>
-                 <widget class="QTableWidget" name="table_process">
+                 <widget class="QTableWidget" name="table_memory_principal">
                   <property name="styleSheet">
                    <string notr="true">background-color: rgb(44, 128, 145);</string>
                   </property>
@@ -313,6 +286,91 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
                   <column>
                    <property name="text">
                     <string>Tiempo total para Terminar</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo Ejecutado</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Prioridad</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Estado</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tamaño</string>
+                   </property>
+                  </column>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QFrame" name="frame_3">
+               <property name="frameShape">
+                <enum>QFrame::StyledPanel</enum>
+               </property>
+               <property name="frameShadow">
+                <enum>QFrame::Raised</enum>
+               </property>
+               <layout class="QVBoxLayout" name="verticalLayout_5">
+                <property name="spacing">
+                 <number>6</number>
+                </property>
+                <property name="leftMargin">
+                 <number>9</number>
+                </property>
+                <property name="topMargin">
+                 <number>9</number>
+                </property>
+                <property name="rightMargin">
+                 <number>9</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>9</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label">
+                  <property name="styleSheet">
+                   <string notr="true">color: rgb(20, 200, 220);
+font: 87 12pt &quot;Arial Black&quot;;</string>
+                  </property>
+                  <property name="text">
+                   <string>MEMORIA SECUNDARIA</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QTableWidget" name="table_memory_secondary">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(44, 128, 145);</string>
+                  </property>
+                  <column>
+                   <property name="text">
+                    <string>Proceso</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo Esperando</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo Total para terminar</string>
                    </property>
                   </column>
                   <column>
