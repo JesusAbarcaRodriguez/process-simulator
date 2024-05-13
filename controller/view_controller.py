@@ -1,4 +1,5 @@
 import sys
+import random
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow
 from model.block_memory import BlockMemory
@@ -8,8 +9,7 @@ from model.process_table import ProcessTable
 from util.states import ProcessState
 from PyQt5 import QtWidgets
 from model.orders import third_order
-
-
+from PyQt5.QtWidgets import QMessageBox
 class MainView(QMainWindow):
 
     def __init__(self):  # this
@@ -19,7 +19,8 @@ class MainView(QMainWindow):
         self.btn_stop.clicked.connect(self.stop_process)
         self.btn_sort.clicked.connect(self.sort_process)
         self.btn_assign.clicked.connect(self.assign_process)
-
+        self.btn_add_process.clicked.connect(self.add_process)
+        self.started = False
         self.table_memory_principal.setColumnWidth(0, 100)
         self.table_memory_principal.setColumnWidth(1, 197)
         self.table_memory_principal.setColumnWidth(2, 197)
@@ -44,7 +45,7 @@ class MainView(QMainWindow):
         self.process2 = Process(2, ProcessState.NEW, 100, "Process 2", 2, 5, 0, 0, 0)
         self.process3 = Process(3, ProcessState.NEW, 20, "Process 3", 2, 15, 0, 0, 0)
         self.process4 = Process(4, ProcessState.NEW, 40, "Process 4", 1, 7, 0, 0, 0)
-
+        self.num_process = 4
         self.process_list_secondary_memory = [self.process1, self.process2, self.process3, self.process4]
 
         self.block1_secondary = BlockMemory(1, 100, None)
@@ -63,30 +64,42 @@ class MainView(QMainWindow):
         self.memory_secondary = Memory(10000, 0, "Secondary")
         self.process_list_secondary_memory, self.block_secondary_list = self.memory_secondary.assign_memory_secondary(self.process_list_secondary_memory, self.block_secondary_list)
         self.add_process_table_secondary(self.process_list_secondary_memory)
+        self.started = True
     def assign_process(self):
-        self.block1 = BlockMemory(1, 100, None)
-        self.block2 = BlockMemory(2, 200, None)
-        self.block3 = BlockMemory(3, 300, None)
-        self.block4 = BlockMemory(4, 400, None)
-        self.block5 = BlockMemory(5, 500, None)
+        if not self.started:
+            QMessageBox.critical(self, "Error", "Debe iniciar el programa primero.")
+        else:
+            self.block1 = BlockMemory(1, 100, None)
+            self.block2 = BlockMemory(2, 200, None)
+            self.block3 = BlockMemory(3, 300, None)
+            self.block4 = BlockMemory(4, 400, None)
+            self.block5 = BlockMemory(5, 500, None)
 
-        self.block_memory_list = [self.block1, self.block2, self.block3, self.block4]
-        #instance primary memory
-        self.memory_principal = Memory(10000, 0, "Primary")
-        self.process_list_primary_memory = []
-        self.process_list_primary_memory, self.block_memory_list,self.process_list_secondary_memory = self.memory_principal.assign_memory(self.process_list_secondary_memory, self.block_memory_list)
-        self.add_process_table_primary(self.process_list_primary_memory)
-        for proc in self.process_list_secondary_memory:
-            print(proc.name)
-        self.add_process_table_secondary(self.process_list_secondary_memory)
+            self.block_memory_list = [self.block1, self.block2, self.block3, self.block4]
+            #instance primary memory
+            self.memory_principal = Memory(10000, 0, "Primary")
+            self.process_list_primary_memory = []
+            self.process_list_primary_memory, self.block_memory_list,self.process_list_secondary_memory = self.memory_principal.assign_memory(self.process_list_secondary_memory, self.block_memory_list)
+            self.add_process_table_primary(self.process_list_primary_memory)
+            self.add_process_table_secondary(self.process_list_secondary_memory)
     def stop_process(self):
         pass
     def sort_process(self):
-        self.process_list = third_order(self.process_list)
-        self.add_process_table(self.process_list)
-
+        if not self.started:
+            QMessageBox.critical(self, "Error", "Debe iniciar el programa primero.")
+        else:
+            self.process_list = third_order(self.process_list)
+            self.add_process_table(self.process_list)
         pass
-
+    def add_process(self):
+        if not self.started:
+            QMessageBox.critical(self, "Error", "Debe iniciar el programa primero.")
+        else:
+            self.num_process += 1
+            name = f"Process {self.num_process}"
+            self.process_list_secondary_memory.append(Process(self.num_process, ProcessState.NEW, 100, name, 2, 5, 0, 0, 0))
+            self.add_process_table_secondary(self.process_list_secondary_memory)
+        pass
     def add_process_table_primary(self, process_list):
         row = 0
         self.table_memory_principal.setRowCount(len(process_list))
