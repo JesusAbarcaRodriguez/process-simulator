@@ -71,55 +71,82 @@
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
          </property>
-         <widget class="QPushButton" name="btn_start">
-          <property name="geometry">
-           <rect>
-            <x>460</x>
-            <y>10</y>
-            <width>75</width>
-            <height>23</height>
-           </rect>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <property name="spacing">
+           <number>0</number>
           </property>
-          <property name="styleSheet">
-           <string notr="true">background-color:  rgb(20, 200, 220);</string>
+          <property name="leftMargin">
+           <number>0</number>
           </property>
-          <property name="text">
-           <string>INICIAR</string>
+          <property name="topMargin">
+           <number>0</number>
           </property>
-         </widget>
-         <widget class="QPushButton" name="btn_stop">
-          <property name="geometry">
-           <rect>
-            <x>370</x>
-            <y>10</y>
-            <width>75</width>
-            <height>23</height>
-           </rect>
+          <property name="rightMargin">
+           <number>0</number>
           </property>
-          <property name="styleSheet">
-           <string notr="true">background-color: rgb(20, 200, 220);</string>
+          <property name="bottomMargin">
+           <number>0</number>
           </property>
-          <property name="text">
-           <string>TERMINAR</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="project_tittle">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>10</y>
-            <width>261</width>
-            <height>21</height>
-           </rect>
-          </property>
-          <property name="styleSheet">
-           <string notr="true">color: rgb(20, 200, 220);
+          <item>
+           <widget class="QFrame" name="frame_5">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(20, 200, 220);
 font: 87 12pt &quot;Arial Black&quot;;</string>
-          </property>
-          <property name="text">
-           <string>SIMULADOR DE PROCESOS</string>
-          </property>
-         </widget>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <widget class="QLabel" name="project_tittle">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>10</y>
+               <width>251</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>SIMULADOR DE PROCESOS</string>
+             </property>
+            </widget>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="frame_6">
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QPushButton" name="btn_stop">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(20, 200, 220);</string>
+               </property>
+               <property name="text">
+                <string>TERMINAR</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_start">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(20, 200, 220);</string>
+               </property>
+               <property name="text">
+                <string>INICIAR</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item>
