@@ -33,24 +33,27 @@ class Memory:
     #   Assign memory to processes
     #   order memory blocks by size
     #   assign memory blocks to processes
-    def assign_memory(self,block_secondary_list,block_primary_list):
+    def assign_memory(self,block_secondary_list,block_primary_list,memory_principal,memory_secondary):
         is_assigned = False
         for block_secondary in block_secondary_list:
             if block_secondary.proc is not None:
                 for block_primary in block_primary_list:
-                    if block_primary.proc is None and block_primary.size >= block_secondary.proc.size:
+                    if block_primary.proc is None and block_primary.size >= block_secondary.proc.size and memory_principal.current_size < memory_principal.max_size:
                         block_primary.proc = block_secondary.proc
                         block_secondary.proc = None
                         is_assigned = True
+                        memory_secondary.current_size -= 1
+                        memory_principal.current_size += 1
                         break
         return block_secondary_list,block_primary_list,is_assigned       
 
     # todo: new, suspended_ready, suspended_blocked
-    def assign_memory_secondary(self, process, block_memory_list):
+    def assign_memory_secondary(self, process, block_memory_list,memory_secondary):
         for process_item in process:
             for block in block_memory_list:
-                if block.proc is None and block.size >= process_item.size:
+                if block.proc is None and block.size >= process_item.size and memory_secondary.current_size < memory_secondary.max_size:
                     block.proc = process_item
+                    memory_secondary.current_size += 1
                     break
         return block_memory_list
     def assign_proc_to_memory_secondary(self,proc,block_memory_list):

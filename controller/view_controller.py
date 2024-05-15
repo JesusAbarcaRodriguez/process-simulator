@@ -61,9 +61,9 @@ class MainView(QMainWindow):
             self.block10_secondary = BlockMemory(10, 1000, None)
 
             #instance secondary memory
-            self.memory_secondary = Memory(10000, 0, "Secondary")
+            self.memory_secondary = Memory(9, 0, "Secondary")
             self.memory_secondary.block_memory_list = [self.block1_secondary, self.block2_secondary, self.block3_secondary, self.block4_secondary, self.block5_secondary, self.block6_secondary, self.block7_secondary, self.block8_secondary, self.block9_secondary, self.block10_secondary]
-            self.memory_secondary.block_memory_list = self.memory_secondary.assign_memory_secondary(self.process_list_secondary_memory, self.memory_secondary.block_memory_list)
+            self.memory_secondary.block_memory_list,self.memory_secondary = self.memory_secondary.assign_memory_secondary(self.process_list_secondary_memory, self.c.block_memory_list,self.memory_secondary)
             self.add_process_table_secondary(self.memory_secondary.block_memory_list)
             self.started = True
 
@@ -73,14 +73,14 @@ class MainView(QMainWindow):
             self.block4 = BlockMemory(4, 400, None)
             self.block5 = BlockMemory(5, 500, None)
             #instance primary memory
-            self.memory_principal = Memory(10000, 0, "Primary")
+            self.memory_principal = Memory(4, 0, "Primary")
             self.memory_principal.block_memory_list = [self.block1, self.block2, self.block3, self.block4, self.block5]
     def assign_process(self):
         if not self.started:
             QMessageBox.critical(self, "Error", "Debe iniciar el programa primero.")
         else:
             is_assigned = False
-            self.memory_secondary.block_memory_list,self.memory_principal.block_memory_list,is_assigned = self.memory_principal.assign_memory(self.memory_secondary.block_memory_list, self.memory_principal.block_memory_list)
+            self.memory_secondary.block_memory_list,self.memory_principal.block_memory_list,is_assigned,self.memory_principal,self.memory_secondary = self.memory_principal.assign_memory(self.memory_secondary.block_memory_list, self.memory_principal.block_memory_list,self.memory_principal,self.memory_secondary)
             if is_assigned == False:
                 QMessageBox.critical(self, "Error", "No hay bloques de memoria principal libres para asignar procesos.")
             else:
