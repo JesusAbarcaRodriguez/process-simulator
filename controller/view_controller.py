@@ -1,14 +1,12 @@
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow
-from model.block_memory import BlockMemory
-from model.memory import Memory
 from model.process import Process
 from util.states import ProcessState
 from PyQt5 import QtWidgets
 from model.orders import third_order
 from PyQt5.QtWidgets import QMessageBox
 from view.table.table import create_primary_table, create_secondary_table
-from controller.process_controller import initialize_primary_memory, initialize_secondary_memory
+from controller.memory_controller import initialize_primary_memory, initialize_secondary_memory
 class MainView(QMainWindow):
 
     def __init__(self):  # this
@@ -34,7 +32,6 @@ class MainView(QMainWindow):
             self.sec_mem = initialize_secondary_memory(self)
             self.add_process_table_secondary(self.sec_mem.block_memory_list)
 
-
     def assign_process(self):
         if not self.started:
             QMessageBox.critical(self, "Error", "Debe iniciar el programa primero.")
@@ -42,11 +39,10 @@ class MainView(QMainWindow):
             is_assigned = False
 
             temp = self.pri_mem.assign_memory(
-            self.sec_mem.block_memory_list, 
-            self.pri_mem.block_memory_list,
-            self.pri_mem,
-            self.sec_mem
-)
+                self.sec_mem.block_memory_list, 
+                self.sec_mem
+            )
+
             self.sec_mem.block_memory_list = temp[0]
             self.pri_mem.block_memory_list = temp[1]
             is_assigned = temp[2]
@@ -78,7 +74,7 @@ class MainView(QMainWindow):
             name = f"Process {self.num_process}"
             self.proc = Process(self.num_process, ProcessState.NEW, 100, name, 2, 5, 0, 0, 0)
             if self.is_secondary_memory_full() == False:
-                self.memory_secondary.block_memory_list = self.memory_secondary.assign_proc_to_memory_secondary(self.proc, self.memory_secondary.block_memory_list)
+                self.memory_secondary.block_memory_list = self.memory_secondary.assign_proc_to_memory_secondary(self.proc)
                 self.add_process_table_secondary(self.memory_secondary.block_memory_list)
             else:
                 QMessageBox.critical(self, "Error", "No hay bloques de memoria secundaria libres para agregar el proceso.")
