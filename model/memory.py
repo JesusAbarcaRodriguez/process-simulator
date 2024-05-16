@@ -5,7 +5,6 @@
 #   virtual memory
 from util.states import ProcessState
 
-
 class Memory:
     block_memory_list=[]
 
