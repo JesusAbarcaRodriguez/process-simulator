@@ -203,12 +203,12 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_3">
+                 <widget class="QPushButton" name="btn_suspend">
                   <property name="styleSheet">
                    <string notr="true">background-color: rgb(20, 200, 220);</string>
                   </property>
                   <property name="text">
-                   <string>PushButton</string>
+                   <string>Suspender Proceso</string>
                   </property>
                  </widget>
                 </item>

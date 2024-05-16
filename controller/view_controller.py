@@ -1,5 +1,6 @@
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow
+from controller.process_controller import suspend_process
 from model.process import Process
 from util.states import ProcessState
 from PyQt5 import QtWidgets
@@ -17,11 +18,13 @@ class MainView(QMainWindow):
         self.btn_sort.clicked.connect(self.sort_process)
         self.btn_assign.clicked.connect(self.assign_process)
         self.btn_add_process.clicked.connect(self.add_process)
+        self.btn_suspend.clicked.connect(self.suspend_process_table)
         self.started = False
 
         create_secondary_table(self)
         create_primary_table(self)
-
+        self.table_memory_principal.itemClicked.connect(self.handle_item_clicked)
+        self.selected_process = None
         # Verificar si el layout está configurado correctamente
         if self.frame_inferior1.layout() is None:
             self.frame_inferior1.setLayout(QtWidgets.QVBoxLayout()) # Configurar un QVBoxLayout
@@ -52,8 +55,8 @@ class MainView(QMainWindow):
             if is_assigned == False:
                 QMessageBox.critical(self, "Error", "No hay bloques de memoria principal libres para asignar procesos.")
             else:
-                self.add_process_table_primary(self.memory_principal.block_memory_list)
-                self.add_process_table_secondary(self.memory_secondary.block_memory_list)
+                self.add_process_table_primary(self.pri_mem.block_memory_list)
+                self.add_process_table_secondary(self.sec_mem.block_memory_list)
 
     def stop_process(self):
         pass
@@ -74,8 +77,8 @@ class MainView(QMainWindow):
             name = f"Process {self.num_process}"
             self.proc = Process(self.num_process, ProcessState.NEW, 100, name, 2, 5, 0, 0, 0)
             if self.is_secondary_memory_full() == False:
-                self.memory_secondary.block_memory_list = self.memory_secondary.assign_proc_to_memory_secondary(self.proc)
-                self.add_process_table_secondary(self.memory_secondary.block_memory_list)
+                self.sec_mem.block_memory_list = self.sec_mem.assign_proc_to_sec_mem(self.proc)
+                self.add_process_table_secondary(self.sec_mem.block_memory_list)
             else:
                 QMessageBox.critical(self, "Error", "No hay bloques de memoria secundaria libres para agregar el proceso.")
         pass
@@ -88,13 +91,12 @@ class MainView(QMainWindow):
             return  # Salir de la función ya que no hay elementos que mostrar
         row = 0
         self.table_memory_principal.setRowCount(len(block_primary_list))
-        row = 0
         self.table_memory_principal.setRowCount(len(block_primary_list))
         for block in block_primary_list:
             if block.proc is not None:
                 self.table_memory_principal.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.proc.name)))
                 self.table_memory_principal.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.proc.size)))
-                self.table_memory_principal.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.to_finish_time)))
+                self.table_memory_principal.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.pid)))
                 self.table_memory_principal.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.executed_time)))
                 self.table_memory_principal.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.priority)))
                 row += 1
@@ -102,7 +104,7 @@ class MainView(QMainWindow):
 
     def add_process_table_secondary(self, block_secondary_list):
         self.table_memory_secondary.clearContents()
-        self.table_memory_secondary.setRowCount(0) 
+        self.table_memory_secondary.setRowCount(0)
         if not block_secondary_list:
             self.table_memory_secondary.setRowCount(0)  # Limpiar la tabla si no hay datos
             return  # Salir de la función ya que no hay elementos que mostrar
@@ -118,7 +120,12 @@ class MainView(QMainWindow):
                 row += 1
 
     def is_secondary_memory_full(self):
-        for block in self.memory_secondary.block_memory_list:
+        for block in self.sec_mem.block_memory_list:
             if block.proc is None:
                 return False
         return True
+    def handle_item_clicked(self, item):
+        id = self.table_memory_principal.item(item.row(), 2).text()
+        self.id_process = int(id)
+    def suspend_process_table(self):
+        suspend_process(self)

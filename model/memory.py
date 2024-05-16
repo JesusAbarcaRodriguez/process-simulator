@@ -37,7 +37,7 @@ class Memory:
         return self.block_memory_list
 
     # place type of memory in param
-    def assign_proc_to_memory_secondary(self, process):
+    def assign_proc_to_sec_mem(self, process):
         for block in self.block_memory_list:
             if block.proc is None and block.size >= process.size:
                 block.proc = process
