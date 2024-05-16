@@ -20,3 +20,14 @@ def suspend_process(self):
                         break
             self.add_process_table_primary(self.pri_mem.block_memory_list)
             self.add_process_table_secondary(self.sec_mem.block_memory_list)
+
+def end_process(self):
+    if self.id_process is not None:
+        for block in self.pri_mem.block_memory_list:
+            if block.proc is not None:
+                if block.proc.pid == self.id_process:
+                    block.proc.state = ProcessState.TERMINATED
+                    block.proc = None
+                    break
+        self.add_process_table_primary(self.pri_mem.block_memory_list)
+    pass

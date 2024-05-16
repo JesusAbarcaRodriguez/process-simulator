@@ -188,17 +188,17 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
                    <string notr="true">background-color: rgb(20, 200, 220);</string>
                   </property>
                   <property name="text">
-                   <string>PushButton</string>
+                   <string>Graficos</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton_4">
+                 <widget class="QPushButton" name="btn_end">
                   <property name="styleSheet">
                    <string notr="true">background-color: rgb(20, 200, 220);</string>
                   </property>
                   <property name="text">
-                   <string>PushButton</string>
+                   <string>Terminar Proceso</string>
                   </property>
                  </widget>
                 </item>
