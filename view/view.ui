@@ -307,27 +307,12 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
                   </column>
                   <column>
                    <property name="text">
-                    <string>Tiempo Esperando</string>
+                    <string>Tamaño</string>
                    </property>
                   </column>
                   <column>
                    <property name="text">
-                    <string>Tiempo total para Terminar</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Tiempo Ejecutado</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Prioridad</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Tiempo</string>
+                    <string>Pid</string>
                    </property>
                   </column>
                   <column>
@@ -337,7 +322,22 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
                   </column>
                   <column>
                    <property name="text">
-                    <string>Tamaño</string>
+                    <string>Prioridad</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo Ejecutado</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo Esperando</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo total para Terminar</string>
                    </property>
                   </column>
                  </widget>
@@ -392,27 +392,12 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
                   </column>
                   <column>
                    <property name="text">
-                    <string>Tiempo Esperando</string>
+                    <string>Tamaño</string>
                    </property>
                   </column>
                   <column>
                    <property name="text">
-                    <string>Tiempo Total para terminar</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Tiempo Ejecutado</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Prioridad</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
-                    <string>Tiempo</string>
+                    <string>Pid</string>
                    </property>
                   </column>
                   <column>
@@ -422,7 +407,22 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
                   </column>
                   <column>
                    <property name="text">
-                    <string>Tamaño</string>
+                    <string>Prioridad</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo Ejecutado</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo Esperando</string>
+                   </property>
+                  </column>
+                  <column>
+                   <property name="text">
+                    <string>Tiempo Total para terminar</string>
                    </property>
                   </column>
                  </widget>
