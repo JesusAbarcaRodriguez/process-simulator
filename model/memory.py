@@ -3,6 +3,9 @@
 #   principal memory
 #   secondary memory
 #   virtual memory
+from util.states import ProcessState
+
+
 class Memory:
     block_memory_list=[]
 
@@ -18,6 +21,7 @@ class Memory:
             if block_secondary.proc is not None:
                 for block_primary in self.block_memory_list:
                     if block_primary.proc is None and block_primary.size >= block_secondary.proc.size and self.current_size < self.max_size:
+                        block_secondary.proc.state = ProcessState.READY
                         block_primary.proc = block_secondary.proc
                         block_secondary.proc = None
                         is_assigned = True

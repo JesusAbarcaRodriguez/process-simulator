@@ -26,7 +26,7 @@ class MainView(QMainWindow):
         self.btn_end.clicked.connect(self.end_process_table)
 
         self.started = False
-
+        self.is_item_clicked = False
         self.memory_window = None
         create_secondary_table(self)
         create_primary_table(self)
@@ -50,7 +50,7 @@ class MainView(QMainWindow):
             is_assigned = False
 
             temp = self.pri_mem.assign_memory(
-                self.sec_mem.block_memory_list, 
+                self.sec_mem.block_memory_list,
                 self.sec_mem
             )
 
@@ -93,7 +93,7 @@ class MainView(QMainWindow):
 
     def add_process_table_primary(self, block_primary_list):
         self.table_memory_principal.clearContents()
-        self.table_memory_principal.setRowCount(0) 
+        self.table_memory_principal.setRowCount(0)
         if not block_primary_list:
             self.table_memory_principal.setRowCount(0)  # Limpiar la tabla si no hay datos
             return  # Salir de la función ya que no hay elementos que mostrar
@@ -105,7 +105,7 @@ class MainView(QMainWindow):
                 self.table_memory_principal.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.proc.name)))
                 self.table_memory_principal.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.proc.size)))
                 self.table_memory_principal.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.pid)))
-                self.table_memory_principal.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.executed_time)))
+                self.table_memory_principal.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.state)))
                 self.table_memory_principal.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.priority)))
                 row += 1
         pass
@@ -122,8 +122,8 @@ class MainView(QMainWindow):
             if block.proc is not None:
                 self.table_memory_secondary.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.proc.name)))
                 self.table_memory_secondary.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.proc.size)))
-                self.table_memory_secondary.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.to_finish_time)))
-                self.table_memory_secondary.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.executed_time)))
+                self.table_memory_secondary.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.pid)))
+                self.table_memory_secondary.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.state)))
                 self.table_memory_secondary.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.priority)))
                 row += 1
 
@@ -135,11 +135,18 @@ class MainView(QMainWindow):
     def handle_item_clicked(self, item):
         id = self.table_memory_principal.item(item.row(), 2).text()
         self.id_process = int(id)
+        self.is_item_clicked = True
 
     def suspend_process_table(self):
-        suspend_process(self)
+        if self.is_item_clicked:
+            suspend_process(self)
+        else:
+            QMessageBox.critical(self, "Error", "Debe seleccionar un proceso de memoria principal para suspender.")
     def end_process_table(self):
-        end_process(self)
+        if self.is_item_clicked:
+            end_process(self)
+        else:
+            QMessageBox.critical(self, "Error", "Debe seleccionar un proceso de memoria principal para suspender.")
     def open_memory_window(self):
         if not self.memory_window:  # Verificar si la ventana ya está abierta
             self.memory_window = MemoryWindow()
