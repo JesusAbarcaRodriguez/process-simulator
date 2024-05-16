@@ -8,26 +8,35 @@ from model.orders import third_order
 from PyQt5.QtWidgets import QMessageBox
 from view.table.table import create_primary_table, create_secondary_table
 from controller.memory_controller import initialize_primary_memory, initialize_secondary_memory
+from PyQt5.QtCore import QObject, pyqtSignal
+
 class MainView(QMainWindow):
 
     def __init__(self):  # this
         super(MainView, self).__init__()
         uic.loadUi("view/view.ui", self)
+        
+       
         self.btn_start.clicked.connect(self.start_process)
         self.btn_stop.clicked.connect(self.stop_process)
         self.btn_sort.clicked.connect(self.sort_process)
         self.btn_assign.clicked.connect(self.assign_process)
         self.btn_add_process.clicked.connect(self.add_process)
         self.btn_suspend.clicked.connect(self.suspend_process_table)
+        self.btn_memory.clicked.connect(self.open_memory_window)
+        
         self.started = False
 
+        self.memory_window = None
         create_secondary_table(self)
         create_primary_table(self)
         self.table_memory_principal.itemClicked.connect(self.handle_item_clicked)
         self.selected_process = None
+        
         # Verificar si el layout está configurado correctamente
         if self.frame_inferior1.layout() is None:
             self.frame_inferior1.setLayout(QtWidgets.QVBoxLayout()) # Configurar un QVBoxLayout
+        
 
     def start_process(self):
         if self.started == False:
@@ -129,3 +138,76 @@ class MainView(QMainWindow):
         self.id_process = int(id)
     def suspend_process_table(self):
         suspend_process(self)
+        
+    def open_memory_window(self):
+        if not self.memory_window:  # Verificar si la ventana ya está abierta
+            self.memory_window = MemoryWindow()
+            self.memory_window.show()
+            self.memory_window.closed.connect(self.on_memory_window_closed)
+
+    def on_memory_window_closed(self):
+        self.memory_window = None  # Restablece la referencia a None
+        
+class MemoryWindow(QMainWindow):
+    
+
+    
+    closed = pyqtSignal()
+    def __init__(self):
+        super(MemoryWindow, self).__init__()
+        uic.loadUi("view/memory.ui", self)
+        self.figura = FigureOne()
+        self.figura2 = FigureOne()
+        self.grafica1.addWidget(self.figura)
+        self.grafica2.addWidget(self.figura2)
+        
+    def closeEvent(self, event):
+        # Emitir la señal cuando la ventana se cierra
+        self.closed.emit()
+        super().closeEvent(event)
+        
+        
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from PyQt5.QtCore import QTimer
+
+class FigureOne(FigureCanvas):
+    def __init__(self):
+        self.fig, self.ax = plt.subplots(1, dpi=100, figsize=(5, 5),
+                                          sharey=True, facecolor='white')
+        super().__init__(self.fig)
+
+        self.x = np.arange(1, 101)  
+        self.y_memory = np.zeros_like(self.x)  
+
+        self.line, = self.ax.plot(self.x, self.y_memory, color='red')
+
+        self.ax.set_ylim(0, 1024)  
+        self.ax.set_xlim(0, 150)
+        self.ax.set_xticks([])
+        self.ax.set_yticks([128, 256, 384, 512, 640, 768, 896, 1024])
+
+        self.memory_text = self.ax.text(0.5, -0.1, '', transform=self.ax.transAxes, ha='center')
+
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_memory)
+        self.timer.start(1000)
+
+    def update_memory(self):
+        # Generar un nuevo valor de ocupación de memoria (entre 0 y 1024 MB)
+        new_memory_value = np.random.randint(0, 1025)
+
+        # Actualizar la lista de datos de ocupación de memoria
+        self.y_memory = np.append(self.y_memory[1:], new_memory_value)
+
+        # Actualizar los datos en la gráfica
+        self.line.set_ydata(self.y_memory)
+
+        # Actualizar el texto de la memoria
+        usage_text = f"{new_memory_value}/1024"
+        self.memory_text.set_text(usage_text)
+
+        # Redibujar la gráfica
+        self.ax.figure.canvas.draw()
