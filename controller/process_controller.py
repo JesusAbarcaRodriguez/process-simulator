@@ -1,6 +1,7 @@
 from model.process import Process
 from util.states import ProcessState
 import random
+
 #   Create a number of processes, and return a list of them
 def create_processes(self, num_processes):
     self.process_list_secondary_memory = []
@@ -10,17 +11,20 @@ def create_processes(self, num_processes):
         self.process_list_secondary_memory.append(process)
     self.num_process = len(self.process_list_secondary_memory)
     return self.process_list_secondary_memory
+
 def suspend_process(self):
-        if self.id_process is not None:
-            for block in self.pri_mem.block_memory_list:
-                if block.proc is not None:
-                    if block.proc.pid == self.id_process:
-                        block.proc.state = ProcessState.SUSPENDED_BLOCKED
-                        self.sec_mem.block_memory_list = self.sec_mem.assign_proc_to_sec_mem(block.proc)
-                        block.proc = None
-                        break
-            self.add_process_table_primary(self.pri_mem.block_memory_list)
-            self.add_process_table_secondary(self.sec_mem.block_memory_list)
+    if not self.id_process:
+        return
+
+    for block in self.pri_mem.block_memory_list:
+        if block.proc and block.proc.pid == self.id_process:
+            block.proc.suspended_block()
+            self.sec_mem.block_memory_list = self.sec_mem.assign_proc_to_sec_mem(block.proc)
+            block.proc = None
+            break
+
+    self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
+    self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
 
 def end_process(self):
     if self.id_process is not None:
@@ -30,5 +34,5 @@ def end_process(self):
                     block.proc.state = ProcessState.TERMINATED
                     block.proc = None
                     break
-        self.add_process_table_primary(self.pri_mem.block_memory_list)
+        self.add_process_table(self.table_memory_principal,self.pri_mem.block_memory_list)
     pass
