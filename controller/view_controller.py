@@ -106,7 +106,7 @@ class MainView(QMainWindow):
             self.proc = Process(self.num_process, ProcessState.NEW, 100, name, priority_rand, 0, 0, to_finish_time_rand)
             if self.is_secondary_memory_full() == False:
                 self.sec_mem.block_memory_list = self.sec_mem.assign_proc_to_sec_mem(self.proc)
-                self.add_process_table_secondary(self.sec_mem.block_memory_list)
+                self.add_process_table(self.table_memory_secondary,self.sec_mem.block_memory_list)
             else:
                 show_error_message(
                     self, 
