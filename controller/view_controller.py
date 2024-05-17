@@ -13,6 +13,7 @@ from model.orders import third_order
 from PyQt5.QtWidgets import QMessageBox
 from view.table.table import create_primary_table, create_secondary_table
 from controller.memory_controller import initialize_primary_memory, initialize_secondary_memory
+from util.message import show_error_message
 class MainView(QMainWindow):
 
     def __init__(self):  # this
@@ -44,13 +45,17 @@ class MainView(QMainWindow):
         if self.started == False:
             self.pri_mem = initialize_primary_memory(self)
             self.sec_mem = initialize_secondary_memory(self)
-            self.add_process_table_secondary(self.sec_mem.block_memory_list)
+            self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
             thread_sec_memory = threading.Thread(target=self.create_thread_to_sec_memory)
             thread_sec_memory.start()
 
     def assign_process(self):
         if not self.started:
-            QMessageBox.critical(self, "Error", "Debe iniciar el programa primero.")
+            show_error_message(
+                self, 
+                "Error", 
+                "Debe iniciar el programa primero."
+            )
         else:
             is_assigned = False
 
@@ -66,18 +71,25 @@ class MainView(QMainWindow):
             self.sec_mem = temp[4]
 
             if is_assigned == False:
-                QMessageBox.critical(self, "Error", "No hay bloques de memoria principal libres para asignar procesos.")
+                show_error_message(
+                    self, 
+                    "Error", 
+                    "No hay bloques de memoria principal libres para asignar procesos."
+                )
             else:
-                self.add_process_table_primary(self.pri_mem.block_memory_list)
-                self.add_process_table_secondary(self.sec_mem.block_memory_list)
+                self.add_process_table(self.table_memory_principal, 
+                                        self.pri_mem.block_memory_list)
+                self.add_process_table(self.table_memory_secondary, 
+                                        self.sec_mem.block_memory_list)
                 thread_pri_memory = threading.Thread(target=self.create_thread_to_pri_memory)
                 thread_pri_memory.start()
+
     def stop_process(self):
         pass
 
     def sort_process(self):
         if not self.started:
-            QMessageBox.critical(self, "Error", "Debe iniciar el programa primero.")
+            show_error_message(self, "Error", "Debe iniciar el programa primero.")
         else:
             self.process_list = third_order(self.process_list)
             self.add_process_table(self.process_list)
@@ -85,7 +97,7 @@ class MainView(QMainWindow):
 
     def add_process(self):
         if not self.started:
-            QMessageBox.critical(self, "Error", "Debe iniciar el programa primero.")
+            show_error_message(self, "Error", "Debe iniciar el programa primero.")
         else:
             self.num_process += 1
             name = f"Process {self.num_process}"
@@ -96,56 +108,48 @@ class MainView(QMainWindow):
                 self.sec_mem.block_memory_list = self.sec_mem.assign_proc_to_sec_mem(self.proc)
                 self.add_process_table_secondary(self.sec_mem.block_memory_list)
             else:
-                QMessageBox.critical(self, "Error", "No hay bloques de memoria secundaria libres para agregar el proceso.")
-        pass
+                show_error_message(
+                    self, 
+                    "Error", 
+                    "No hay bloques de memoria secundaria libres para agregar el proceso."
+                )
 
-    def add_process_table_primary(self, block_primary_list):
-        self.table_memory_principal.clearContents()
-        self.table_memory_principal.setRowCount(0)
+    def clear_table(self, table):
+        table.clearContents()
+        table.setRowCount(0)
+
+    def set_table_row_count(self, table, count):
+        table.setRowCount(count)
+
+    def add_row_to_table(self, table, row, block):
+        table.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.proc.name)))
+        table.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.proc.size)))
+        table.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.pid)))
+        table.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.state.value)))
+        table.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.priority)))
+        table.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.proc.executed_time)))
+        table.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.proc.waiting_time)))
+        table.setItem(row, 7, QtWidgets.QTableWidgetItem(str(block.proc.to_finish_time)))
+
+    def add_process_table(self, table, block_primary_list):
+        self.clear_table(table)
         if not block_primary_list:
-            self.table_memory_principal.setRowCount(0)  # Limpiar la tabla si no hay datos
-            return  # Salir de la función ya que no hay elementos que mostrar
-        row = 0
-        self.table_memory_principal.setRowCount(len(block_primary_list))
-        self.table_memory_principal.setRowCount(len(block_primary_list))
-        for block in block_primary_list:
-            if block.proc is not None:
-                self.table_memory_principal.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.proc.name)))
-                self.table_memory_principal.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.proc.size)))
-                self.table_memory_principal.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.pid)))
-                self.table_memory_principal.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.state.value)))
-                self.table_memory_principal.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.priority)))
-                self.table_memory_principal.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.proc.executed_time)))
-                self.table_memory_principal.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.proc.waiting_time)))
-                self.table_memory_principal.setItem(row, 7, QtWidgets.QTableWidgetItem(str(block.proc.to_finish_time)))
-                row += 1
-        pass
-
-    def add_process_table_secondary(self, block_secondary_list):
-        self.table_memory_secondary.clearContents()
-        self.table_memory_secondary.setRowCount(0)
-        if not block_secondary_list:
-            self.table_memory_secondary.setRowCount(0)  # Limpiar la tabla si no hay datos
-            return  # Salir de la función ya que no hay elementos que mostrar
-        row = 0
-        self.table_memory_secondary.setRowCount(len(block_secondary_list))
-        for block in block_secondary_list:
-            if block.proc is not None:
-                self.table_memory_secondary.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.proc.name)))
-                self.table_memory_secondary.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.proc.size)))
-                self.table_memory_secondary.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.pid)))
-                self.table_memory_secondary.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.state.value)))
-                self.table_memory_secondary.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.priority)))
-                self.table_memory_secondary.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.proc.executed_time)))
-                self.table_memory_secondary.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.proc.waiting_time)))
-                self.table_memory_secondary.setItem(row, 7, QtWidgets.QTableWidgetItem(str(block.proc.to_finish_time)))
-                row += 1
+            return  # Exit the function as there are no items to display
+        self.set_table_row_count(table,
+                                 len(block_primary_list))
+        for row, block in enumerate(block_primary_list):
+            if block.proc and table == self.table_memory_principal:
+                self.add_row_to_table(table, row, block)
+                block.proc.admit()
+            elif block.proc and table == self.table_memory_secondary:
+                self.add_row_to_table(table, row, block)
 
     def is_secondary_memory_full(self):
         for block in self.sec_mem.block_memory_list:
             if block.proc is None:
                 return False
         return True
+
     def handle_item_clicked(self, item):
         id = self.table_memory_principal.item(item.row(), 2).text()
         self.id_process = int(id)
@@ -155,12 +159,22 @@ class MainView(QMainWindow):
         if self.is_item_clicked:
             suspend_process(self)
         else:
-            QMessageBox.critical(self, "Error", "Debe seleccionar un proceso de memoria principal para suspender.")
+            show_error_message(
+                self, 
+                "Error",
+                "Debe seleccionar un proceso de memoria principal para suspenderlo."
+            ) 
+
     def end_process_table(self):
         if self.is_item_clicked:
             end_process(self)
         else:
-            QMessageBox.critical(self, "Error", "Debe seleccionar un proceso de memoria principal para suspender.")
+            show_error_message(
+                self, 
+                "Error", 
+                "Debe seleccionar un proceso de memoria principal para eliminarlo."
+            )
+
     def open_memory_window(self):
         if not self.memory_window:  # Verificar si la ventana ya está abierta
             self.memory_window = MemoryWindow()
@@ -173,18 +187,17 @@ class MainView(QMainWindow):
     def create_thread_to_pri_memory(self):
         while True:
             for block in self.pri_mem.block_memory_list:
-                if block.proc is not None:
-                    if block.proc.executed_time == block.proc.to_finish_time:
-                        block.proc.state = ProcessState.TERMINATED
-                        block.proc = None
-                    else:
-                        block.proc.executed_time += 1
+                if block.proc and block.proc.executed_time >= block.proc.to_finish_time:
+                    block.proc.state = ProcessState.TERMINATED
+                    block.proc = None
             time.sleep(1)
-            self.add_process_table_primary(self.pri_mem.block_memory_list)
+            self.add_process_table(self.table_memory_principal, 
+                                   self.pri_mem.block_memory_list) 
+
     def create_thread_to_sec_memory(self):
         while True:
-            for block in self.sec_mem.block_memory_list:
-                if block.proc is not None:
-                    block.proc.waiting_time += 1
             time.sleep(1)
-            self.add_process_table_secondary(self.sec_mem.block_memory_list)
+            for block in self.sec_mem.block_memory_list:
+                if block.proc:
+                    block.proc.waiting_time += 1 
+            self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
