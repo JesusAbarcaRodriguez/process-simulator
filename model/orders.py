@@ -1,5 +1,4 @@
 from model.algorithms import highest_response_rate, shortest_job_first
-
 # Change to block_list instead of process_list
 def first_order(process):
     for i in range(0,len(process) -1):

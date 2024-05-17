@@ -63,7 +63,7 @@ border: none;
            </widget>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="grafica2"/>
+           <layout class="QVBoxLayout" name="graphic2"/>
           </item>
          </layout>
         </widget>
@@ -101,7 +101,7 @@ border: none;
            </widget>
           </item>
           <item>
-           <layout class="QVBoxLayout" name="grafica1"/>
+           <layout class="QVBoxLayout" name="graphic1"/>
           </item>
          </layout>
         </widget>
