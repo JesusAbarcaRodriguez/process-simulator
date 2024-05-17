@@ -4,7 +4,7 @@ from util.states import ProcessState
 
 class Process:
     # remove state by param
-    def __init__(self, pid, state,size, name, priority, to_finish_time, executed_time, waiting_time, mem_limit):
+    def __init__(self, pid, state,size, name, priority,  executed_time, waiting_time, to_finish_time):
         self.pid = pid
         self.state = ProcessState(state)
         self.size = size
@@ -13,7 +13,6 @@ class Process:
         self.to_finish_time = to_finish_time
         self.executed_time = executed_time
         self.waiting_time = waiting_time
-        self.mem_limit = mem_limit
         self.thread = ProcessState.NEW
         self.lock = threading.Lock()
 

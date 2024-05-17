@@ -1,3 +1,4 @@
+import random
 import threading
 import time
 from PyQt5 import uic
@@ -44,6 +45,8 @@ class MainView(QMainWindow):
             self.pri_mem = initialize_primary_memory(self)
             self.sec_mem = initialize_secondary_memory(self)
             self.add_process_table_secondary(self.sec_mem.block_memory_list)
+            thread_sec_memory = threading.Thread(target=self.create_thread_to_sec_memory)
+            thread_sec_memory.start()
 
     def assign_process(self):
         if not self.started:
@@ -67,7 +70,7 @@ class MainView(QMainWindow):
             else:
                 self.add_process_table_primary(self.pri_mem.block_memory_list)
                 self.add_process_table_secondary(self.sec_mem.block_memory_list)
-                thread_pri_memory = threading.Thread(target=self.create_thread)
+                thread_pri_memory = threading.Thread(target=self.create_thread_to_pri_memory)
                 thread_pri_memory.start()
     def stop_process(self):
         pass
@@ -86,7 +89,9 @@ class MainView(QMainWindow):
         else:
             self.num_process += 1
             name = f"Process {self.num_process}"
-            self.proc = Process(self.num_process, ProcessState.NEW, 100, name, 2, 5, 0, 0, 0)
+            to_finish_time_rand = random.randint(20, 50)
+            priority_rand = random.randint(1, 10)
+            self.proc = Process(self.num_process, ProcessState.NEW, 100, name, priority_rand, 0, 0, to_finish_time_rand)
             if self.is_secondary_memory_full() == False:
                 self.sec_mem.block_memory_list = self.sec_mem.assign_proc_to_sec_mem(self.proc)
                 self.add_process_table_secondary(self.sec_mem.block_memory_list)
@@ -112,7 +117,7 @@ class MainView(QMainWindow):
                 self.table_memory_principal.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.priority)))
                 self.table_memory_principal.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.proc.executed_time)))
                 self.table_memory_principal.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.proc.waiting_time)))
-                self.table_memory_principal.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.proc.to_finish_time)))
+                self.table_memory_principal.setItem(row, 7, QtWidgets.QTableWidgetItem(str(block.proc.to_finish_time)))
                 row += 1
         pass
 
@@ -165,13 +170,24 @@ class MainView(QMainWindow):
     def on_memory_window_closed(self):
         self.memory_window = None  # Restablece la referencia a None
 
-    def create_thread(self):
+    def create_thread_to_pri_memory(self):
         while True:
             for block in self.pri_mem.block_memory_list:
                 if block.proc is not None:
-                    block.proc.executed_time += 1
+                    if block.proc.executed_time == block.proc.to_finish_time:
+                        block.proc.state = ProcessState.TERMINATED
+                        block.proc = None
+                    else:
+                        block.proc.executed_time += 1
             time.sleep(1)
             self.add_process_table_primary(self.pri_mem.block_memory_list)
+    def create_thread_to_sec_memory(self):
+        while True:
+            for block in self.sec_mem.block_memory_list:
+                if block.proc is not None:
+                    block.proc.waiting_time += 1
+            time.sleep(1)
+            self.add_process_table_secondary(self.sec_mem.block_memory_list)
 
 class MemoryWindow(QMainWindow):
         closed = pyqtSignal()
