@@ -8,18 +8,19 @@ class FigureOne(FigureCanvas):
         self.fig, self.ax = plt.subplots(1, dpi=100, figsize=(5, 5),sharey=True, facecolor='white')
         super().__init__(self.fig)
 
+        self.fig.subplots_adjust(left=0.07, right=0.99, top=0.9, bottom=0.1)
+        
         self.x = np.arange(1, 101)
         self.y_memory = np.zeros_like(self.x)
 
         self.line, = self.ax.plot(self.x, self.y_memory, color='red')
-
         self.ax.set_ylim(0, 1024)
         self.ax.set_xlim(0, 150)
         self.ax.set_xticks([])
         self.ax.set_yticks([128, 256, 384, 512, 640, 768, 896, 1024])
 
         self.memory_text = self.ax.text(0.5, -0.1, '', transform=self.ax.transAxes, ha='center')
-
+        
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_memory)
         self.timer.start(1000)
