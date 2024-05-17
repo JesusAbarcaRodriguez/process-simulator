@@ -14,6 +14,13 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string>
+     background-image: url(:/view/img/fondo5.jpg);
+     background-repeat: no-repeat;
+     background-position: center;
+    </string>
+   </property>
    <layout class="QHBoxLayout" name="horizontalLayout_2">
     <property name="spacing">
      <number>0</number>
@@ -442,6 +449,8 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
    </layout>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>
