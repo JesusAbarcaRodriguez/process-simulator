@@ -4,6 +4,7 @@ import time
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow
 from controller.figure_controller import FigureOne
+from controller.memory_window_controller import MemoryWindow
 from controller.process_controller import end_process, suspend_process
 from model.process import Process
 from util.states import ProcessState
@@ -12,7 +13,6 @@ from model.orders import third_order
 from PyQt5.QtWidgets import QMessageBox
 from view.table.table import create_primary_table, create_secondary_table
 from controller.memory_controller import initialize_primary_memory, initialize_secondary_memory
-from PyQt5.QtCore import pyqtSignal
 class MainView(QMainWindow):
 
     def __init__(self):  # this
@@ -113,7 +113,7 @@ class MainView(QMainWindow):
                 self.table_memory_principal.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.proc.name)))
                 self.table_memory_principal.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.proc.size)))
                 self.table_memory_principal.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.pid)))
-                self.table_memory_principal.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.state)))
+                self.table_memory_principal.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.state.value)))
                 self.table_memory_principal.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.priority)))
                 self.table_memory_principal.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.proc.executed_time)))
                 self.table_memory_principal.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.proc.waiting_time)))
@@ -134,7 +134,7 @@ class MainView(QMainWindow):
                 self.table_memory_secondary.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.proc.name)))
                 self.table_memory_secondary.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.proc.size)))
                 self.table_memory_secondary.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.pid)))
-                self.table_memory_secondary.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.state)))
+                self.table_memory_secondary.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.state.value)))
                 self.table_memory_secondary.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.priority)))
                 self.table_memory_secondary.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.proc.executed_time)))
                 self.table_memory_secondary.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.proc.waiting_time)))
@@ -188,18 +188,3 @@ class MainView(QMainWindow):
                     block.proc.waiting_time += 1
             time.sleep(1)
             self.add_process_table_secondary(self.sec_mem.block_memory_list)
-
-class MemoryWindow(QMainWindow):
-        closed = pyqtSignal()
-        def __init__(self):
-            super(MemoryWindow, self).__init__()
-            uic.loadUi("view/memory.ui", self)
-            self.figura = FigureOne()
-            self.figura2 = FigureOne()
-            self.grafica1.addWidget(self.figura)
-            self.grafica2.addWidget(self.figura2)
-
-        def closeEvent(self, event):
-            # Emitir la señal cuando la ventana se cierra
-            self.closed.emit()
-            super().closeEvent(event)

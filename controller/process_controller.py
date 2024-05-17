@@ -5,7 +5,7 @@ import random
 def create_processes(self, num_processes):
     self.process_list_secondary_memory = []
     for i in range(1, num_processes + 1):
-        to_finish_time_rand = random.randint(1, 10)
+        to_finish_time_rand = random.randint(20, 60)
         process = Process(i, ProcessState.NEW, i*50, f"Process {i}", i%2+1, 0, 0, to_finish_time_rand)
         self.process_list_secondary_memory.append(process)
     self.num_process = len(self.process_list_secondary_memory)
