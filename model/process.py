@@ -1,6 +1,7 @@
 import random
 import threading
 import time
+from model.page import Page
 from util.states import ProcessState
 
 class Process:
@@ -15,6 +16,7 @@ class Process:
         self.executed_time = executed_time
         self.waiting_time = waiting_time
         self.thread = ProcessState.NEW
+        
         # self.lock = threading.Lock()
 
     def __str__(self):
@@ -96,3 +98,11 @@ class Process:
         if self.state == ProcessState.RUNNING:
             self.state = ProcessState.TERMINATED
             self.thread.join()
+    
+    def divide_into_pages(self, page_size):
+        num_pages = (self.size + page_size - 1) // page_size  # Calcula el número de páginas necesarias
+        pages = []
+        for i in range(num_pages):
+            page_id = f"{self.pid}-{i}"
+            pages.append(Page(page_id, min(page_size, self.size - i * page_size), self, i))
+        return pages

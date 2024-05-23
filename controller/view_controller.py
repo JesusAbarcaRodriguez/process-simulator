@@ -74,11 +74,19 @@ class MainView(QMainWindow):
                 self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(self.proc)
                 self.add_process_table(self.table_memory_principal,self.pri_mem.block_memory_list)
             else:
-                show_error_message(
-                    self, 
-                    "Error", 
-                    "No hay bloques de memoria principal libres para agregar el proceso."
-                )
+                page_size = 10  # Tamaño de página arbitrario, ajústalo según tus necesidades
+                pages = self.proc.divide_into_pages(page_size)
+                
+                # Intentar agregar las páginas a la memoria principal y secundaria
+                for page in pages:
+                    if not self.is_primary_memory_full():
+                        self.pri_mem.block_memory_list = self.pri_mem.assign_page_to_pri_mem(page)
+                    else:
+                        self.sec_mem.block_memory_list = self.sec_mem.assign_page_to_sec_mem(page)
+                
+                # Actualizar las tablas de memoria
+                self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
+                self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
 
     def clear_table(self, table):
         table.clearContents()
@@ -111,10 +119,9 @@ class MainView(QMainWindow):
                 self.add_row_to_table(table, row, block)
 
     def is_primary_memory_full(self):
-        for block in self.pri_mem.block_memory_list:
-            if block.proc is None:
-                return False
-        return True
+        if self.pri_mem.current_size == self.pri_mem.max_size-1:
+            return True
+        return False
 
     def handle_item_clicked(self, item):
         id = self.table_memory_principal.item(item.row(), 2).text()
