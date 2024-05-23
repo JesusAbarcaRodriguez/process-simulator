@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <property name="styleSheet">
     <string>
-     background-image: url(:/view/img/fondo5.jpg);
+     background-image: url(:/);
      background-repeat: no-repeat;
      background-position: center;
     </string>

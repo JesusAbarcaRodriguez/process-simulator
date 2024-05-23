@@ -14,23 +14,7 @@ class Memory:
         self.type_memory = type_memory
 
     #   assign memory blocks to processes
-    def assign_memory(self, block_secondary_list, memory_secondary):
-        is_assigned = False
-        for block_secondary in block_secondary_list:
-            if block_secondary.proc is not None:
-                for block_primary in self.block_memory_list:
-                    if block_primary.proc is None and block_primary.size >= block_secondary.proc.size and self.current_size < self.max_size:
-                        block_secondary.proc.state = ProcessState.READY
-                        block_primary.proc = block_secondary.proc
-                        block_secondary.proc = None
-                        is_assigned = True
-                        memory_secondary.current_size -= 1
-                        self.current_size += 1
-                        break
-        return block_secondary_list, self.block_memory_list, is_assigned, self, memory_secondary      
-
-    # todo: new, suspended_ready, suspended_blocked
-    def assign_memory_secondary(self, process):
+    def assign_memory(self, process):
         for process_item in process:
             for block in self.block_memory_list:
                 if block.proc is None and block.size >= process_item.size and self.current_size < self.max_size:
@@ -40,7 +24,7 @@ class Memory:
         return self.block_memory_list
 
     # place type of memory in param
-    def assign_proc_to_sec_mem(self, process):
+    def assign_proc_to_pri_mem(self, process):
         for block in self.block_memory_list:
             if block.proc is None and block.size >= process.size:
                 block.proc = process

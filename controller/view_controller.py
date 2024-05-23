@@ -45,45 +45,11 @@ class MainView(QMainWindow):
         if self.started == False:
             self.pri_mem = initialize_primary_memory(self)
             self.sec_mem = initialize_secondary_memory(self)
-            self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
-            thread_sec_memory = threading.Thread(target=self.create_thread_to_sec_memory)
-            thread_sec_memory.start()
-
+            self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
+            thread_pri_memory = threading.Thread(target=self.create_thread_to_pri_memory)
+            thread_pri_memory.start()
     def assign_process(self):
-        if not self.started:
-            show_error_message(
-                self, 
-                "Error", 
-                "Debe iniciar el programa primero."
-            )
-        else:
-            is_assigned = False
-
-            temp = self.pri_mem.assign_memory(
-                self.sec_mem.block_memory_list,
-                self.sec_mem
-            )
-
-            self.sec_mem.block_memory_list = temp[0]
-            self.pri_mem.block_memory_list = temp[1]
-            is_assigned = temp[2]
-            self.pri_mem = temp[3]
-            self.sec_mem = temp[4]
-
-            if is_assigned == False:
-                show_error_message(
-                    self, 
-                    "Error", 
-                    "No hay bloques de memoria principal libres para asignar procesos."
-                )
-            else:
-                self.add_process_table(self.table_memory_principal, 
-                                        self.pri_mem.block_memory_list)
-                self.add_process_table(self.table_memory_secondary, 
-                                        self.sec_mem.block_memory_list)
-                thread_pri_memory = threading.Thread(target=self.create_thread_to_pri_memory)
-                thread_pri_memory.start()
-
+        pass
     def stop_process(self):
         pass
 
@@ -104,14 +70,14 @@ class MainView(QMainWindow):
             to_finish_time_rand = random.randint(20, 50)
             priority_rand = random.randint(1, 10)
             self.proc = Process(self.num_process, ProcessState.NEW, 100, name, priority_rand, 0, 0, to_finish_time_rand)
-            if self.is_secondary_memory_full() == False:
-                self.sec_mem.block_memory_list = self.sec_mem.assign_proc_to_sec_mem(self.proc)
-                self.add_process_table(self.table_memory_secondary,self.sec_mem.block_memory_list)
+            if self.is_primary_memory_full() == False:
+                self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(self.proc)
+                self.add_process_table(self.table_memory_principal,self.pri_mem.block_memory_list)
             else:
                 show_error_message(
                     self, 
                     "Error", 
-                    "No hay bloques de memoria secundaria libres para agregar el proceso."
+                    "No hay bloques de memoria principal libres para agregar el proceso."
                 )
 
     def clear_table(self, table):
@@ -144,8 +110,8 @@ class MainView(QMainWindow):
             elif block.proc and table == self.table_memory_secondary:
                 self.add_row_to_table(table, row, block)
 
-    def is_secondary_memory_full(self):
-        for block in self.sec_mem.block_memory_list:
+    def is_primary_memory_full(self):
+        for block in self.pri_mem.block_memory_list:
             if block.proc is None:
                 return False
         return True
@@ -190,9 +156,11 @@ class MainView(QMainWindow):
                 if block.proc and block.proc.executed_time >= block.proc.to_finish_time:
                     block.proc.state = ProcessState.TERMINATED
                     block.proc = None
+                if block.proc is not None:
+                    block.proc.executed_time += 1
             time.sleep(1)
             self.add_process_table(self.table_memory_principal, 
-                                   self.pri_mem.block_memory_list) 
+                                self.pri_mem.block_memory_list) 
 
     def create_thread_to_sec_memory(self):
         while True:

@@ -6,17 +6,16 @@ from controller.process_controller import create_processes
 def initialize_primary_memory(self):
     self.memory_principal = Memory(10, 0, "Primary")
     self.memory_principal.block_memory_list = create_memory_blocks(self, 10)
+    create_processes(self, 4)
+    self.memory_principal.assign_memory(
+        self.process_list_primary_memory)
+    self.started = True
     return self.memory_principal
 
 #   Initialize secondary memory
 def initialize_secondary_memory(self):
     self.memory_secondary = Memory(20, 0, "Secondary")
     self.memory_secondary.block_memory_list = create_memory_blocks(self, 20)
-    create_processes(self, 4)
-
-    self.memory_secondary.assign_memory_secondary(
-        self.process_list_secondary_memory)
-    self.started = True
     return self.memory_secondary
 
 #   Create memory blocks
