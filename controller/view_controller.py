@@ -45,6 +45,7 @@ class MainView(QMainWindow):
         if self.started == False:
             self.pri_mem = initialize_primary_memory(self)
             self.sec_mem = initialize_secondary_memory(self)
+            self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
             self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
             thread_pri_memory = threading.Thread(target=self.create_thread_to_pri_memory)
             thread_pri_memory.start()
@@ -69,9 +70,11 @@ class MainView(QMainWindow):
             name = f"Process {self.num_process}"
             to_finish_time_rand = random.randint(20, 50)
             priority_rand = random.randint(1, 10)
-            self.proc = Process(self.num_process, ProcessState.NEW, 100, name, priority_rand, 0, 0, to_finish_time_rand)
+            self.proc = Process(self.num_process, ProcessState.READY, 100, name, priority_rand, 0, 0, to_finish_time_rand)
             if self.is_primary_memory_full_process() == False:
                 self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(self.proc)
+                self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
+                time.sleep(1)
                 self.add_process_table(self.table_memory_principal,self.pri_mem.block_memory_list)
             else:
                 page_size = 10  # Tamaño de página arbitrario, ajústalo según tus necesidades
@@ -124,8 +127,6 @@ class MainView(QMainWindow):
         for row, block in enumerate(block_primary_list):
             if block.proc and table == self.table_memory_principal:
                 self.add_row_to_table(table, row, block)
-                if block.is_process:
-                    block.proc.admit()
             elif block.proc and table == self.table_memory_secondary:
                 self.add_row_to_table(table, row, block)
 
@@ -174,21 +175,22 @@ class MainView(QMainWindow):
 
     def create_thread_to_pri_memory(self):
         while True:
+            process_found = False  # Flag to indicate if we found a process to execute
             for block in self.pri_mem.block_memory_list:
-                if block.is_process:
-                    if block.proc and block.proc.executed_time >= block.proc.to_finish_time:
-                        block.proc.state = ProcessState.TERMINATED
+                if block.is_process and block.proc is not None:
+                    if block.proc.executed_time >= block.proc.to_finish_time:
+                        block.proc.terminate()
+                        self.add_process_table(self.table_memory_principal, 
+                                self.pri_mem.block_memory_list) # Update the table
+                        time.sleep(1)
                         block.proc = None
-                    if block.proc is not None:
-                        block.proc.executed_time += 1
+                    else:
+                        if not process_found:
+                            block.proc.executed_time += 1
+                            block.proc.admit()
+                            process_found = True  # Mark that we found a process to execute
+                        else:
+                            block.proc.waiting_time += 1
             time.sleep(1)
             self.add_process_table(self.table_memory_principal, 
-                                self.pri_mem.block_memory_list) 
-
-    def create_thread_to_sec_memory(self):
-        while True:
-            time.sleep(1)
-            for block in self.sec_mem.block_memory_list:
-                if block.proc:
-                    block.proc.waiting_time += 1 
-            self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
+                                self.pri_mem.block_memory_list) # Update the table

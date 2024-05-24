@@ -98,7 +98,6 @@ class Process:
     def terminate(self):
         if self.state == ProcessState.RUNNING:
             self.state = ProcessState.TERMINATED
-            self.thread.join()
     
     def divide_into_pages(self, page_size):
         num_pages = (self.size + page_size - 1) // page_size  # Calcula el número de páginas necesarias
