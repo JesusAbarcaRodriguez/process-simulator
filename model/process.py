@@ -5,6 +5,7 @@ from model.page import Page
 from util.states import ProcessState
 
 class Process:
+    pages = []
     # remove state by param
     def __init__(self, pid, state,size, name, priority,  executed_time, waiting_time, to_finish_time):
         self.pid = pid
@@ -101,8 +102,7 @@ class Process:
     
     def divide_into_pages(self, page_size):
         num_pages = (self.size + page_size - 1) // page_size  # Calcula el número de páginas necesarias
-        pages = []
         for i in range(num_pages):
             page_id = f"{self.pid}-{i}"
-            pages.append(Page(page_id, min(page_size, self.size - i * page_size), self, i))
-        return pages
+            self.pages.append(Page(page_id, min(page_size, self.size - i * page_size), self, i))
+        return self.pages

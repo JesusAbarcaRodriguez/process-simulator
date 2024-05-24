@@ -70,16 +70,16 @@ class MainView(QMainWindow):
             to_finish_time_rand = random.randint(20, 50)
             priority_rand = random.randint(1, 10)
             self.proc = Process(self.num_process, ProcessState.NEW, 100, name, priority_rand, 0, 0, to_finish_time_rand)
-            if self.is_primary_memory_full() == False:
+            if self.is_primary_memory_full_process() == False:
                 self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(self.proc)
                 self.add_process_table(self.table_memory_principal,self.pri_mem.block_memory_list)
             else:
                 page_size = 10  # Tamaño de página arbitrario, ajústalo según tus necesidades
-                pages = self.proc.divide_into_pages(page_size)
+                self.proc.pages = self.proc.divide_into_pages(page_size)
                 
                 # Intentar agregar las páginas a la memoria principal y secundaria
-                for page in pages:
-                    if not self.is_primary_memory_full():
+                for page in self.proc.pages:
+                    if not self.is_primary_memory_full_pages():
                         self.pri_mem.block_memory_list = self.pri_mem.assign_page_to_pri_mem(page)
                     else:
                         self.sec_mem.block_memory_list = self.sec_mem.assign_page_to_sec_mem(page)
@@ -96,14 +96,24 @@ class MainView(QMainWindow):
         table.setRowCount(count)
 
     def add_row_to_table(self, table, row, block):
-        table.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.proc.name)))
-        table.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.proc.size)))
-        table.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.pid)))
-        table.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.state.value)))
-        table.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.priority)))
-        table.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.proc.executed_time)))
-        table.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.proc.waiting_time)))
-        table.setItem(row, 7, QtWidgets.QTableWidgetItem(str(block.proc.to_finish_time)))
+        if block.is_process:
+            table.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.proc.name)))
+            table.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.proc.size)))
+            table.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.pid)))
+            table.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.state.value)))
+            table.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.priority)))
+            table.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.proc.executed_time)))
+            table.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.proc.waiting_time)))
+            table.setItem(row, 7, QtWidgets.QTableWidgetItem(str(block.proc.to_finish_time)))
+        else:
+            table.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.proc.page_id)))
+            table.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.proc.size)))
+            table.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.proc.page_number)))
+            table.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.proc.process.state.value)))
+            table.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.proc.process.priority)))
+            table.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.proc.process.executed_time)))
+            table.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.proc.process.waiting_time)))
+            table.setItem(row, 7, QtWidgets.QTableWidgetItem(str(block.proc.process.to_finish_time)))
 
     def add_process_table(self, table, block_primary_list):
         self.clear_table(table)
@@ -114,12 +124,17 @@ class MainView(QMainWindow):
         for row, block in enumerate(block_primary_list):
             if block.proc and table == self.table_memory_principal:
                 self.add_row_to_table(table, row, block)
-                block.proc.admit()
+                if block.is_process:
+                    block.proc.admit()
             elif block.proc and table == self.table_memory_secondary:
                 self.add_row_to_table(table, row, block)
 
-    def is_primary_memory_full(self):
-        if self.pri_mem.current_size == self.pri_mem.max_size-1:
+    def is_primary_memory_full_process(self):
+        if self.pri_mem.current_size == self.pri_mem.max_size-2:
+            return True
+        return False
+    def is_primary_memory_full_pages(self):
+        if self.pri_mem.current_size == self.pri_mem.max_size:
             return True
         return False
 
@@ -160,11 +175,12 @@ class MainView(QMainWindow):
     def create_thread_to_pri_memory(self):
         while True:
             for block in self.pri_mem.block_memory_list:
-                if block.proc and block.proc.executed_time >= block.proc.to_finish_time:
-                    block.proc.state = ProcessState.TERMINATED
-                    block.proc = None
-                if block.proc is not None:
-                    block.proc.executed_time += 1
+                if block.is_process:
+                    if block.proc and block.proc.executed_time >= block.proc.to_finish_time:
+                        block.proc.state = ProcessState.TERMINATED
+                        block.proc = None
+                    if block.proc is not None:
+                        block.proc.executed_time += 1
             time.sleep(1)
             self.add_process_table(self.table_memory_principal, 
                                 self.pri_mem.block_memory_list) 
