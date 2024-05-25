@@ -101,7 +101,8 @@ class Process:
     
     def divide_into_pages(self, page_size):
         num_pages = (self.size + page_size - 1) // page_size  # Calcula el número de páginas necesarias
+        time_per_page = self.to_finish_time / num_pages
         for i in range(num_pages):
             page_id = f"{self.pid}-{i}"
-            self.pages.append(Page(page_id, min(page_size, self.size - i * page_size), self, i))
+            self.pages.append(Page(page_id, min(page_size, self.size - i * page_size), self, i, self.priority, time_per_page, 0, 0))
         return self.pages

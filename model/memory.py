@@ -17,18 +17,35 @@ class Memory:
     def assign_memory(self, process):
         for process_item in process:
             for block in self.block_memory_list:
-                if block.proc is None and block.size >= process_item.size and self.current_size < self.max_size:
-                    block.proc = process_item
+                if block.data is None and block.size >= process_item.size and self.current_size < self.max_size:
+                    block.data = process_item
                     self.current_size += 1
                     block.is_process = True
                     break
         return self.block_memory_list
 
+    def is_memory_full_to_process(self):
+        if self.current_size == self.max_size-2:
+            return True
+        return False
+    def is_memory_full_to_pages(self):
+        if self.current_size == self.max_size:
+            return True
+        return False
     # place type of memory in param
     def assign_proc_to_pri_mem(self, process):
         for block in self.block_memory_list:
-            if block.proc is None and block.size >= process.size:
-                block.proc = process
+            if block.data is None and block.size >= process.size:
+                block.data = process
+                self.current_size += 1
+                block.is_process = True
+                break
+        return self.block_memory_list
+    
+    def assign_proc_to_sec_mem(self, process):
+        for block in self.block_memory_list:
+            if block.data is None and block.size >= process.size:
+                block.data = process
                 self.current_size += 1
                 block.is_process = True
                 break
@@ -36,8 +53,8 @@ class Memory:
     
     def assign_page_to_pri_mem(self, page):
         for block in self.block_memory_list:
-            if block.proc is None and block.size >= page.size:
-                block.proc = page
+            if block.data is None and block.size >= page.size:
+                block.data = page
                 self.current_size += 1
                 block.is_process = False
                 break
@@ -45,8 +62,8 @@ class Memory:
 
     def assign_page_to_sec_mem(self, page):
         for block in self.block_memory_list:
-            if block.proc is None and block.size >= page.size:
-                block.proc = page
+            if block.data is None and block.size >= page.size:
+                block.data = page
                 self.current_size += 1
                 block.is_process = False
                 break

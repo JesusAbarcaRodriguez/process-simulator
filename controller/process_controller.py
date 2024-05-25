@@ -2,12 +2,11 @@ from model.process import Process
 from util.states import ProcessState
 import random
 
-#   Create a number of processes, and return a list of them
 def create_processes(self, num_processes):
     self.process_list_primary_memory = []
     for i in range(1, num_processes + 1):
         to_finish_time_rand = random.randint(20, 60)
-        process = Process(i, ProcessState.READY, i*50, f"Process {i}", i%4+1, 0, 0, to_finish_time_rand)
+        process = Process(i, ProcessState.READY, i*50, f"Process {i}", i%2+1, 0, 0, to_finish_time_rand)
         self.process_list_primary_memory.append(process)
     self.num_process = len(self.process_list_primary_memory)
     return self.process_list_primary_memory
@@ -17,10 +16,10 @@ def suspend_process(self):
         return
 
     for block in self.pri_mem.block_memory_list:
-        if block.proc and block.proc.pid == self.id_process:
-            block.proc.suspended_block()
-            self.sec_mem.block_memory_list = self.sec_mem.assign_proc_to_sec_mem(block.proc)
-            block.proc = None
+        if block.data and block.data.pid == self.id_process:
+            block.data.suspended_block()
+            self.sec_mem.block_memory_list = self.sec_mem.assign_proc_to_sec_mem(block.data)
+            block.data = None
             break
 
     self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
@@ -29,10 +28,18 @@ def suspend_process(self):
 def end_process(self):
     if self.id_process is not None:
         for block in self.pri_mem.block_memory_list:
-            if block.proc is not None:
-                if block.proc.pid == self.id_process:
-                    block.proc.state = ProcessState.TERMINATED
-                    block.proc = None
+            if block.data is not None:
+                if block.data.pid == self.id_process:
+                    block.data.state = ProcessState.TERMINATED
+                    block.data = None
                     break
         self.add_process_table(self.table_memory_principal,self.pri_mem.block_memory_list)
     pass
+
+def create_process(self):
+    self.num_process += 1
+    name = f"Process {self.num_process}"
+    to_finish_time_rand = random.randint(20, 50)
+    priority_rand = random.randint(1, 10)
+    self.proc = Process(self.num_process, ProcessState.READY, 100, name, priority_rand, 0, 0, to_finish_time_rand)
+    return self.proc
