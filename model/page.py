@@ -15,7 +15,7 @@ def create_pages(self):
 
     # Intentar agregar las páginas a la memoria principal y secundaria
     for page in self.proc.pages:
-        if not self.is_primary_memory_full_pages():
+        if not self.pri_mem.is_memory_full_to_pages():
             self.pri_mem.block_memory_list = self.pri_mem.assign_page_to_pri_mem(page)
         else:
             self.sec_mem.block_memory_list = self.sec_mem.assign_page_to_sec_mem(page)

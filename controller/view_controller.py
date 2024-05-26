@@ -3,8 +3,8 @@ import time
 from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow
 from controller.memory_window_controller import MemoryWindow
-from model.page import create_pages, assign_page_to_pri_mem
-from controller.process_controller import create_process, end_process, suspend_process
+from model.page import create_pages
+from controller.process_controller import create_process, end_process, suspend_process,assign_suspended_proc_to_pri_mem
 from PyQt5 import QtWidgets
 from model.orders import third_order
 from util.states import ProcessState
@@ -22,13 +22,15 @@ class MainView(QMainWindow):
         self.btn_suspend.clicked.connect(self.suspend_process_table)
         self.btn_memory.clicked.connect(self.open_memory_window)
         self.btn_end.clicked.connect(self.end_process_table)
+        self.btn_assign.clicked.connect(self.assign_process_to_memory)
 
         self.started = False
         self.is_item_clicked = False
         self.memory_window = None
         create_secondary_table(self)
         create_primary_table(self)
-        self.table_memory_principal.itemClicked.connect(self.handle_item_clicked)
+        self.table_memory_principal.itemClicked.connect(self.handle_item_clicked_pri_mem)
+        self.table_memory_secondary.itemClicked.connect(self.handle_item_clicked_sec_mem)
         self.selected_process = None
 
         # Verificar si el layout está configurado correctamente
@@ -50,7 +52,7 @@ class MainView(QMainWindow):
             if self.pri_mem.is_memory_full_to_process() == False:
                 self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(self.proc)
                 time.sleep(1)
-                self.order_print_table_memory
+                self.order_print_table_memory()
             else:
                 self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = create_pages(self) # type: ignore
                 self.print_tables()
@@ -94,21 +96,33 @@ class MainView(QMainWindow):
             elif block.data and table == self.table_memory_secondary:
                 self.add_row_to_table(table, row, block)
 
-    def handle_item_clicked(self, item):
+    def handle_item_clicked_pri_mem(self, item):
         id = self.table_memory_principal.item(item.row(), 2).text()
+        self.id_process = int(id)
+        self.is_item_clicked = True
+    
+    def handle_item_clicked_sec_mem(self, item):
+        id = self.table_memory_secondary.item(item.row(), 2).text()
         self.id_process = int(id)
         self.is_item_clicked = True
 
     def suspend_process_table(self):
         if self.is_item_clicked:
             suspend_process(self)
-            self.order_print_table_memory
+            self.order_print_table_memory()
         else:
             show_error_message( self, "Error", "Debe seleccionar un proceso de memoria principal para suspenderlo." )
+    
+    def assign_process_to_memory(self):
+        if self.is_item_clicked:
+            assign_suspended_proc_to_pri_mem(self)
+            self.order_print_table_memory()
+        else:
+            show_error_message( self, "Error", "Debe seleccionar un proceso de memoria secundaria para asignarlo a la memoria principal.")
     def end_process_table(self):
         if self.is_item_clicked:
             end_process(self)
-            self.order_print_table_memory
+            self.order_print_table_memory()
         else:
             show_error_message( self,  "Error", "Debe seleccionar un proceso de memoria principal para eliminarlo.")
 
@@ -128,6 +142,7 @@ class MainView(QMainWindow):
                     if block.data.executed_time >= block.data.to_finish_time:
                         block.data.terminate()
                         block.data = None
+                        self.pri_mem.current_size -= 1
                         time.sleep(1)
                         self.order_print_table_memory()
                     else:

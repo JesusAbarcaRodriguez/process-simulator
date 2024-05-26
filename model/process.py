@@ -76,14 +76,14 @@ class Process:
     #   - If the process is suspended_ready, it will change to ready
     def activate(self):
         if self.state == ProcessState.SUSPENDED_BLOCKED:
-            self.state = ProcessState.BLOCKED
+            self.state = ProcessState.READY
         elif self.state == ProcessState.SUSPENDED_READY:
             self.ready()
 
     #   Suspend the process
     #   Changes the state from blocked to suspended_blocked
     def suspended_block(self):
-        if self.state == ProcessState.BLOCKED or self.state == ProcessState.RUNNING:
+        if self.state == ProcessState.READY or self.state == ProcessState.RUNNING:
             self.state = ProcessState.SUSPENDED_BLOCKED
 
     #   Suspend the process

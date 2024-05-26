@@ -14,7 +14,6 @@ def create_processes(self, num_processes):
 def suspend_process(self):
     if not self.id_process:
         return
-
     for block in self.pri_mem.block_memory_list:
         if block.data and block.data.pid == self.id_process:
             block.data.suspended_block()
@@ -24,6 +23,16 @@ def suspend_process(self):
 
     self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
     self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
+
+def assign_suspended_proc_to_pri_mem(self):
+        if not self.id_process:
+            return
+        for block in self.sec_mem.block_memory_list:
+            if block.data and block.data.pid == self.id_process:
+                block.data.activate()
+                self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(block.data)
+                block.data = None
+                break
 
 def end_process(self):
     if self.id_process is not None:
