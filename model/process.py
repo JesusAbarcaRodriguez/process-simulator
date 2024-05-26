@@ -104,5 +104,5 @@ class Process:
         time_per_page = self.to_finish_time / num_pages
         for i in range(num_pages):
             page_id = f"{self.pid}-{i}"
-            self.pages.append(Page(page_id, min(page_size, self.size - i * page_size), self, i, self.priority, time_per_page, 0, 0))
+            self.pages.append(Page(page_id, min(page_size, self.size - i * page_size), self, i, self.priority, time_per_page, 0, 0,ProcessState.READY))
         return self.pages

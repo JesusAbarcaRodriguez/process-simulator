@@ -1,5 +1,8 @@
+from util.states import ProcessState
+
+
 class Page:
-    def __init__(self, page_id, size, process, page_number, priority, to_finish_time, executed_time, waiting_time   ):
+    def __init__(self, page_id, size, process, page_number, priority, to_finish_time, executed_time, waiting_time,state   ):
         self.page_id = page_id
         self.size = size
         self.process = process
@@ -8,6 +11,7 @@ class Page:
         self.to_finish_time = to_finish_time
         self.executed_time = executed_time
         self.waiting_time = waiting_time
+        self.state = ProcessState(state)
 
 def create_pages(self):
     page_size = 10  # Tamaño de página arbitrario, ajústalo según tus necesidades
