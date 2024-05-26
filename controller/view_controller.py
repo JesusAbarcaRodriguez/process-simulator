@@ -23,7 +23,7 @@ class MainView(QMainWindow):
         self.btn_memory.clicked.connect(self.open_memory_window)
         self.btn_end.clicked.connect(self.end_process_table)
         self.btn_assign.clicked.connect(self.assign_process_to_memory)
-
+        self.box_sort.currentIndexChanged.connect(self.order_print_table_memory)
         self.started = False
         self.is_item_clicked = False
         self.memory_window = None
@@ -154,7 +154,15 @@ class MainView(QMainWindow):
             self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)  # Update the table
 
     def order_print_table_memory(self):
-        self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
+        box_value = self.box_sort.currentText()
+        if box_value == "El tiempo restante más corto":
+            self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
+        elif box_value == "Trabajo más corto":
+            self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
+        elif box_value == "FIFO":
+            self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
+        elif box_value == "Prioridad":
+            self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
         self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
     
     def print_tables(self):
