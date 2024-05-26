@@ -126,7 +126,7 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
              <item>
               <widget class="QPushButton" name="btn_stop">
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(20, 200, 220);</string>
+                <string notr="true">background-color: rgb(255, 0, 0);</string>
                </property>
                <property name="text">
                 <string>TERMINAR</string>
@@ -136,7 +136,8 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
              <item>
               <widget class="QPushButton" name="btn_start">
                <property name="styleSheet">
-                <string notr="true">background-color: rgb(20, 200, 220);</string>
+                <string notr="true">background-color: rgb(36, 230, 2);
+font: 75 8pt &quot;MS Shell Dlg 2&quot;;</string>
                </property>
                <property name="text">
                 <string>INICIAR</string>
@@ -213,13 +214,42 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="btn_sort">
+                 <widget class="QComboBox" name="box_sort">
+                  <property name="minimumSize">
+                   <size>
+                    <width>192</width>
+                    <height>18</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize">
+                   <size>
+                    <width>192</width>
+                    <height>18</height>
+                   </size>
+                  </property>
                   <property name="styleSheet">
                    <string notr="true">background-color: rgb(20, 200, 220);</string>
                   </property>
-                  <property name="text">
-                   <string>Ordenamientos</string>
-                  </property>
+                  <item>
+                   <property name="text">
+                    <string>Prioridad</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>El tiempo restante más corto</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>Trabajo más corto</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>FIFO</string>
+                   </property>
+                  </item>
                  </widget>
                 </item>
                 <item>
@@ -442,8 +472,6 @@ font: 87 12pt &quot;Arial Black&quot;;</string>
    </layout>
   </widget>
  </widget>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
