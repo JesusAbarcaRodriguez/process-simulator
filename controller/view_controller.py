@@ -9,7 +9,7 @@ from PyQt5 import QtWidgets
 from model.orders import third_order
 from util.states import ProcessState
 from view.table.table import create_primary_table, create_secondary_table
-from controller.memory_controller import initialize_primary_memory, initialize_secondary_memory
+from controller.memory_controller import assign_page_to_pri_mem, initialize_primary_memory, initialize_secondary_memory
 from util.message import show_error_message
 class MainView(QMainWindow):
 
@@ -143,8 +143,10 @@ class MainView(QMainWindow):
                         block.data.terminate()
                         block.data = None
                         self.pri_mem.current_size -= 1
-                        time.sleep(1)
+                        if any(block.data is not None for block in self.sec_mem.block_memory_list):
+                            self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = assign_page_to_pri_mem(self)
                         self.order_print_table_memory()
+                        time.sleep(1)
                     else:
                         if block.data.state == ProcessState.RUNNING:
                             block.data.executed_time += 1
