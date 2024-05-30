@@ -6,8 +6,8 @@ from controller.memory_window_controller import MemoryWindow
 from model.page import create_pages
 from controller.process_controller import create_process, end_process, suspend_process,assign_suspended_proc_to_pri_mem
 from PyQt5 import QtWidgets
-from model.orders import third_order
-from util.states import ProcessState
+from model.service import create_service
+from util.sorts import first_order, second_order, third_order
 from view.table.table import create_primary_table, create_secondary_table
 from controller.memory_controller import assign_page_to_pri_mem, initialize_primary_memory, initialize_secondary_memory
 from util.message import show_error_message
@@ -23,10 +23,12 @@ class MainView(QMainWindow):
         self.btn_memory.clicked.connect(self.open_memory_window)
         self.btn_end.clicked.connect(self.end_process_table)
         self.btn_assign.clicked.connect(self.assign_process_to_memory)
-        self.box_sort.currentIndexChanged.connect(self.order_print_table_memory)
+        self.box_sort.currentIndexChanged.connect(self.print_sorted_tables)
+        self.btn_service.clicked.connect(self.add_service)
         self.started = False
         self.is_item_clicked = False
         self.memory_window = None
+        self.num_process = 1
         create_secondary_table(self)
         create_primary_table(self)
         self.table_memory_principal.itemClicked.connect(self.handle_item_clicked_pri_mem)
@@ -41,9 +43,21 @@ class MainView(QMainWindow):
         if self.started == False:
             self.pri_mem = initialize_primary_memory(self)
             self.sec_mem = initialize_secondary_memory(self)
-            self.order_print_table_memory()
+            self.print_sorted_tables()
             thread_pri_memory = threading.Thread(target=self.create_thread_to_pri_memory)
             thread_pri_memory.start()
+    
+    def add_service(self):
+        if not self.started:
+            show_error_message(self, "Error", "Debe iniciar el programa primero.")
+        else:
+            self.service = create_service(self)
+            if self.pri_mem.is_memory_full_to_process() == False:
+                self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(self.service)
+                time.sleep(1)
+            else:
+                show_error_message(self, "Error", "No hay suficiente memoria principal para asignar el servicio.")
+            self.print_sorted_tables()
     def add_process(self):
         if not self.started:
             show_error_message(self, "Error", "Debe iniciar el programa primero.")
@@ -52,10 +66,10 @@ class MainView(QMainWindow):
             if self.pri_mem.is_memory_full_to_process() == False:
                 self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(self.proc)
                 time.sleep(1)
-                self.order_print_table_memory()
             else:
-                self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = create_pages(self) # type: ignore
+                self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = create_pages(self)
                 self.print_tables()
+            self.print_sorted_tables()
 
     def clear_table(self, table):
         table.clearContents()
@@ -109,20 +123,20 @@ class MainView(QMainWindow):
     def suspend_process_table(self):
         if self.is_item_clicked:
             suspend_process(self)
-            self.order_print_table_memory()
+            self.print_sorted_tables()
         else:
             show_error_message( self, "Error", "Debe seleccionar un proceso de memoria principal para suspenderlo." )
     
     def assign_process_to_memory(self):
         if self.is_item_clicked:
             assign_suspended_proc_to_pri_mem(self)
-            self.order_print_table_memory()
+            self.print_sorted_tables()
         else:
             show_error_message( self, "Error", "Debe seleccionar un proceso de memoria secundaria para asignarlo a la memoria principal.")
     def end_process_table(self):
         if self.is_item_clicked:
             end_process(self)
-            self.order_print_table_memory()
+            self.print_sorted_tables()
         else:
             show_error_message( self,  "Error", "Debe seleccionar un proceso de memoria principal para eliminarlo.")
 
@@ -138,34 +152,36 @@ class MainView(QMainWindow):
     def create_thread_to_pri_memory(self):
         while True:
             for block in self.pri_mem.block_memory_list:
-                if block.is_process and block.data is not None:
+                if block.data is not None:
                     if block.data.executed_time >= block.data.to_finish_time:
                         block.data.terminate()
+                        self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)  # Update the table
+                        time.sleep(1)
                         block.data = None
                         self.pri_mem.current_size -= 1
                         if any(block.data is not None for block in self.sec_mem.block_memory_list):
                             self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = assign_page_to_pri_mem(self)
-                        self.order_print_table_memory()
-                        time.sleep(1)
+                        self.print_sorted_tables()
                     else:
-                        if block.data.state == ProcessState.RUNNING:
-                            block.data.executed_time += 1
-                        else:
-                            block.data.waiting_time += 1
+                        if block.data.is_running == False:
+                            block.data.admit()
+                        self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)  # Update the table
             time.sleep(1)
-            self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)  # Update the table
-
-    def order_print_table_memory(self):
-        box_value = self.box_sort.currentText()
-        if box_value == "El tiempo restante más corto":
-            self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
-        elif box_value == "Trabajo más corto":
-            self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
-        elif box_value == "FIFO":
-            self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
-        elif box_value == "Prioridad":
-            self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
-        self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
+    def print_sorted_tables(self):
+        if not self.started:
+            show_error_message(self, "Error", "Debe iniciar el programa primero.")
+        else:
+            box_value = self.box_sort.currentText()
+            if box_value == "El tiempo restante más corto":
+                self.pri_mem.block_memory_list = first_order(self.pri_mem.block_memory_list)
+            elif box_value == "Trabajo más corto":
+                self.pri_mem.block_memory_list = second_order(self.pri_mem.block_memory_list)
+            elif box_value == "FIFO":
+                self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
+            elif box_value == "Prioridad":
+                self.pri_mem.block_memory_list = third_order(self.pri_mem.block_memory_list)
+            self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
+            self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
     
     def print_tables(self):
         self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)

@@ -25,7 +25,7 @@ class Memory:
         return self.block_memory_list
 
     def is_memory_full_to_process(self):
-        if self.current_size == self.max_size-2:
+        if self.current_size >= self.max_size-2:
             return True
         return False
     def is_memory_full_to_pages(self):

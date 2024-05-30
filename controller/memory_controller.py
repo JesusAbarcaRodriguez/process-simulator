@@ -29,10 +29,16 @@ def create_memory_blocks(self, num_blocks):
 def assign_page_to_pri_mem(self):
     for block in self.pri_mem.block_memory_list:
         for block_sec_mem in self.sec_mem.block_memory_list:
-            if block.data is None and block.size >= block_sec_mem.data.size:
-                block.data = block_sec_mem.data
-                self.pri_mem.current_size += 1
-                block.is_process = False
-                block_sec_mem.data = None
-                break
+            if block_sec_mem.data is not None:
+                if block.data is None and block.size >= block_sec_mem.data.size:
+                    if block_sec_mem.is_process:
+                        block.is_process = True
+                    else:
+                        block.is_process = False
+                    block.data = block_sec_mem.data
+                    self.pri_mem.current_size += 1
+                    self.sec_mem.current_size -= 1
+                    block.is_process = False
+                    block_sec_mem.data = None
+                    break
     return self.pri_mem.block_memory_list, self.sec_mem.block_memory_list
