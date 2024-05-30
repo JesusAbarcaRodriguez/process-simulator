@@ -263,6 +263,16 @@ font: 75 8pt &quot;MS Shell Dlg 2&quot;;</string>
                  </widget>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="btn_service">
+                  <property name="styleSheet">
+                   <string notr="true">background-color: rgb(20, 200, 220);</string>
+                  </property>
+                  <property name="text">
+                   <string>Agregar Servicio</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QPushButton" name="btn_add_process">
                   <property name="styleSheet">
                    <string notr="true">background-color: rgb(20, 200, 220);</string>
