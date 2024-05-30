@@ -3,19 +3,19 @@ from model.block_memory import BlockMemory
 from controller.process_controller import create_processes
 
 #   Initialize primary memory
-def initialize_primary_memory(self):
-    self.memory_principal = Memory(10, 0, "Primary")
-    self.memory_principal.block_memory_list = create_memory_blocks(self, 10)
-    create_processes(self, 4)
+def initialize_primary_memory(self,memory_size,num_processes):
+    self.memory_principal = Memory(memory_size, 0, "Primary")
+    self.memory_principal.block_memory_list = create_memory_blocks(self, memory_size)
+    create_processes(self, num_processes)
     self.memory_principal.assign_memory(
         self.process_list_primary_memory)
     self.started = True
     return self.memory_principal
 
 #   Initialize secondary memory
-def initialize_secondary_memory(self):
-    self.memory_secondary = Memory(20, 0, "Secondary")
-    self.memory_secondary.block_memory_list = create_memory_blocks(self, 20)
+def initialize_secondary_memory(self,memory_size):
+    self.memory_secondary = Memory(memory_size, 0, "Secondary")
+    self.memory_secondary.block_memory_list = create_memory_blocks(self, memory_size)
     return self.memory_secondary
 
 #   Create memory blocks

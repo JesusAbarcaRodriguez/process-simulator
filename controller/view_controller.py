@@ -6,6 +6,7 @@ from controller.memory_window_controller import MemoryWindow
 from model.page import create_pages
 from controller.process_controller import create_process, end_process, suspend_process,assign_suspended_proc_to_pri_mem
 from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import QInputDialog, QMessageBox
 from model.service import create_service
 from util.sorts import first_order, second_order, third_order
 from view.table.table import create_primary_table, create_secondary_table
@@ -39,10 +40,12 @@ class MainView(QMainWindow):
         if self.frame_inferior1.layout() is None:
             self.frame_inferior1.setLayout(QtWidgets.QVBoxLayout()) # Configurar un QVBoxLayout
 
+    
     def start_process(self):
+        principal_memory, secondary_memory, num_process = self.show_memory_config()
         if self.started == False:
-            self.pri_mem = initialize_primary_memory(self)
-            self.sec_mem = initialize_secondary_memory(self)
+            self.pri_mem = initialize_primary_memory(self, principal_memory, num_process)
+            self.sec_mem = initialize_secondary_memory(self, secondary_memory)
             self.print_sorted_tables()
             thread_pri_memory = threading.Thread(target=self.create_thread_to_pri_memory)
             thread_pri_memory.start()
@@ -186,3 +189,29 @@ class MainView(QMainWindow):
     def print_tables(self):
         self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
         self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
+
+    def show_memory_config(self):
+        principal_memory = None
+        secondary_memory = None
+        initial_processes = None
+        while principal_memory is None or secondary_memory is None or initial_processes is None:
+            principal_memory, ok_principal = QInputDialog.getInt(self, "Input Principal Memory",
+                                                                "Enter principal memory size (>=5):", 5, 5)
+            if not ok_principal:
+                return
+
+            secondary_memory, ok_secondary = QInputDialog.getInt(self, "Input Secondary Memory",
+                                                                "Enter secondary memory size (>=5):", 5, 5)
+            if not ok_secondary:
+                return
+
+            initial_processes, ok_processes = QInputDialog.getInt(self, "Input Initial Processes",
+                                                                "Enter number of initial processes:", 1, 1)
+            if not ok_processes:
+                return
+
+            if initial_processes >= principal_memory:
+                QMessageBox.warning(self, "Input Error", "Initial processes must be less than principal memory size.")
+                return
+
+        return principal_memory, secondary_memory, initial_processes
