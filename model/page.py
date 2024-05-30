@@ -1,3 +1,4 @@
+from util.message import show_error_message
 from util.states import ProcessState
 import threading
 import time
@@ -50,6 +51,9 @@ def create_pages(self):
     page_size = 10  # Tamaño de página arbitrario, ajústalo según tus necesidades
     self.proc.pages = self.proc.divide_into_pages(page_size)
 
+    if len(self.proc.pages) + self.sec_mem.current_size > self.sec_mem.max_size:
+        show_error_message(self, "Error", "No hay suficiente memoria secundaria para asignar las páginas.")
+        return self.pri_mem.block_memory_list, self.sec_mem.block_memory_list
     # Intentar agregar las páginas a la memoria principal y secundaria
     for page in self.proc.pages:
         if not self.pri_mem.is_memory_full_to_pages():
