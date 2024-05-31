@@ -46,11 +46,15 @@ def end_process(self):
         self.add_process_table(self.table_memory_principal,self.pri_mem.block_memory_list)
     pass
 
-def create_process(self):
+def create_process(self,is_proc):
     self.num_process += 1
-    name = f"Process {self.num_process}"
     to_finish_time_rand = random.randint(20, 50)
     priority_rand = random.randint(1, 10)
-    self.proc = Process(self.num_process, ProcessState.RUNNING, 100, name, priority_rand, 0, 0, to_finish_time_rand)
+    if is_proc:
+        name = f"Process {self.num_process}"
+        self.proc = Process(self.num_process, ProcessState.RUNNING, 100, name, priority_rand, 0, 0, to_finish_time_rand)
+    else:
+        name = f"Services {self.num_process}"
+        self.proc = Process(self.num_process, ProcessState.RUNNING, 100, name, priority_rand, 0, 0, float('inf'))
     self.proc.is_running = False
     return self.proc
