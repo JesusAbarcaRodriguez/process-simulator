@@ -7,10 +7,12 @@ class MemoryWindow(QMainWindow):
     def __init__(self):
         super(MemoryWindow, self).__init__()
         uic.loadUi("view/memory.ui", self)
-        self.figura = FigureOne()
-        self.figura2 = FigureOne()
-        self.graphic1.addWidget(self.figura)
-        self.graphic2.addWidget(self.figura2)
+        is_pri_mem = True
+
+        self.figure_prim_memory = FigureOne(is_pri_mem)
+        self.figure_sec_memory = FigureOne(is_pri_mem = False)
+        self.graphic1.addWidget(self.figure_prim_memory)
+        self.graphic2.addWidget(self.figure_sec_memory)
 
     def closeEvent(self, event):
         # Emitir la señal cuando la ventana se cierra

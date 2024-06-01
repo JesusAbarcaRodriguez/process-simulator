@@ -18,6 +18,7 @@ class MainView(QMainWindow):
         uic.loadUi("view/view.ui", self)
 
         self.btn_start.clicked.connect(self.start_process)
+        self.btn_stop.clicked.connect(self.closeEvent)
         self.btn_add_process.clicked.connect(self.add_process)
         self.btn_suspend.clicked.connect(self.suspend_process_table)
         self.btn_memory.clicked.connect(self.open_memory_window)
@@ -42,6 +43,9 @@ class MainView(QMainWindow):
         # Verificar si el layout está configurado correctamente
         if self.frame_inferior1.layout() is None:
             self.frame_inferior1.setLayout(QtWidgets.QVBoxLayout()) # Configurar un QVBoxLayout
+
+    def closeEvent(self, event):
+        self.close()
 
     def start_process(self):
         self.pri_mem = initialize_primary_memory(self, self.global_state.get_pri_mem_size(), self.global_state.get_initial_processes())
@@ -68,6 +72,7 @@ class MainView(QMainWindow):
             self.proc = create_process(self,True)
             if self.pri_mem.is_memory_full_to_process() == False:
                 self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(self.proc)
+                self.calculate_global_prim_mem_used()
                 time.sleep(1)
             else:
                 self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = create_pages(self)
@@ -161,6 +166,7 @@ class MainView(QMainWindow):
                         self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)  # Update the table
                         time.sleep(1)
                         block.data = None
+                        self.calculate_global_prim_mem_used
                         self.pri_mem.current_size -= 1
                         if any(block.data is not None for block in self.sec_mem.block_memory_list):
                             self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = assign_page_to_pri_mem(self)
@@ -189,3 +195,13 @@ class MainView(QMainWindow):
     def print_tables(self):
         self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
         self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
+    
+    def calculate_global_prim_mem_used(self):
+        for block in self.pri_mem.block_memory_list:
+            if block.data is not None:
+                self.global_state.pri_memory_used += block.data.size
+    
+    def add_global_sec_mem_used(self):
+        for block in self.sec_mem.block_memory_list:
+            if block.data is not None:
+                self.global_state.sec_memory_used += block.data.size
