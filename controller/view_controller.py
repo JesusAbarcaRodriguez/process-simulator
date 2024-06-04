@@ -51,6 +51,7 @@ class MainView(QMainWindow):
         self.pri_mem = initialize_primary_memory(self, self.global_state.get_pri_mem_size(), self.global_state.get_initial_processes())
         self.sec_mem = initialize_secondary_memory(self, self.global_state.get_sec_mem_size())
         self.print_sorted_tables()
+        self.calculate_global_prim_mem_used()
         thread_pri_memory = threading.Thread(target=self.create_thread_to_pri_memory)
         thread_pri_memory.start()
     
@@ -166,7 +167,7 @@ class MainView(QMainWindow):
                         self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)  # Update the table
                         time.sleep(1)
                         block.data = None
-                        self.calculate_global_prim_mem_used
+                        self.calculate_global_prim_mem_used()
                         self.pri_mem.current_size -= 1
                         if any(block.data is not None for block in self.sec_mem.block_memory_list):
                             self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = assign_page_to_pri_mem(self)
@@ -197,11 +198,15 @@ class MainView(QMainWindow):
         self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
     
     def calculate_global_prim_mem_used(self):
+        memory_used = 0
         for block in self.pri_mem.block_memory_list:
             if block.data is not None:
-                self.global_state.pri_memory_used += block.data.size
+                memory_used += block.data.size
+        self.global_state.pri_memory_used = memory_used
     
     def add_global_sec_mem_used(self):
+        memory_used = 0
         for block in self.sec_mem.block_memory_list:
             if block.data is not None:
-                self.global_state.sec_memory_used += block.data.size
+                momory_used += block.data.size
+        self.global_state.sec_memory_used = memory_used

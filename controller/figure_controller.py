@@ -28,14 +28,14 @@ class FigureOne(FigureCanvas):
     def update_memory(self):
         if self.is_pri_mem:
             # Actualizar la lista de datos de ocupación de memoria
-            self.y_memory = np.append(self.y_memory[1:], self.global_state.pri_mem_size)
+            self.y_memory = np.append(self.y_memory[1:], self.global_state.pri_memory_used)
             # Actualizar el texto de la memoria
             usage_text = f"{self.global_state.pri_memory_used}/{self.global_state.block_prim_memory_size}"
         else:
             # Actualizar la lista de datos de ocupación de memoria
-            self.y_memory = np.append(self.y_memory[1:], self.global_state.sec_mem_size)
+            self.y_memory = np.append(self.y_memory[1:], self.global_state.sec_memory_used)
             # Actualizar el texto de la memoria
-            usage_text = f"{self.global_state.sec_mem_size}/{self.global_state.block_sec_memory_size}"
+            usage_text = f"{self.global_state.sec_memory_used}/{self.global_state.block_sec_memory_size}"
         self.memory_text.set_text(usage_text)
         # Actualizar los datos en la gráfica
         self.line.set_ydata(self.y_memory)
