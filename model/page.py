@@ -52,7 +52,7 @@ def create_pages(self):
     pages = self.process_aux.divide_into_pages(page_size)
 
     if len(pages) + self.sec_mem.current_size > self.sec_mem.max_size:
-        show_error_message(self, "Error", "No hay suficiente memoria secundaria para asignar las páginas.")
+        show_error_message(self, "Error", "No hay suficiente memoria secundaria para asignar las páginas." + " El tamaño del proceso entrante es de " + str(self.process_aux.size) )
         return self.pri_mem.block_memory_list, self.sec_mem.block_memory_list
     # Intentar agregar las páginas a la memoria principal y secundaria
     for page in pages:
