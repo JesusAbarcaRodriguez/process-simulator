@@ -37,7 +37,7 @@ def create_memory_blocks(self, num_blocks,is_primary_memory):
 def assign_page_to_pri_mem(self):
     for block in self.pri_mem.block_memory_list:
         for block_sec_mem in self.sec_mem.block_memory_list:
-            if block_sec_mem.data is not None:
+            if block_sec_mem.data is not None and block_sec_mem.is_process is False:
                 if block.data is None and block.size >= block_sec_mem.data.size:
                     if block_sec_mem.is_process:
                         block.is_process = True

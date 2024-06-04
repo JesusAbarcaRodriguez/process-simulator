@@ -22,7 +22,7 @@ class GlobalState(object):
         self.pri_mem_size = size
 
     def set_block_sec_memory_size(self, size):
-        self.block_memory_size = size
+        self.block_sec_memory_size = size
     
     def set_block_prim_memory_size(self, size):
         self.block_prim_memory_size = size
@@ -49,7 +49,7 @@ class GlobalState(object):
         return self.initial_processes
     
     def get_block_sec_memory_size(self):
-        return self.block_memory_size
+        return self.block_sec_memory_size
     
     def get_block_prim_memory_size(self):
         return self.block_prim_memory_size

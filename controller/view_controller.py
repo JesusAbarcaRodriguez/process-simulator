@@ -50,6 +50,8 @@ class MainView(QMainWindow):
     def start_process(self):
         self.pri_mem = initialize_primary_memory(self, self.global_state.get_pri_mem_size(), self.global_state.get_initial_processes())
         self.sec_mem = initialize_secondary_memory(self, self.global_state.get_sec_mem_size())
+        self.label_total_pri_mem.setText(str(self.global_state.get_block_prim_memory_size())+" bytes")
+        self.label_total_sec_mem.setText(str(self.global_state.get_block_sec_memory_size())+" bytes")
         self.print_sorted_tables()
         self.calculate_global_prim_mem_used()
         thread_pri_memory = threading.Thread(target=self.create_thread_to_pri_memory)
@@ -78,6 +80,7 @@ class MainView(QMainWindow):
             else:
                 self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = create_pages(self)
                 self.print_tables()
+                self.calculate_global_sec_mem_used()
             self.print_sorted_tables()
 
     def clear_table(self, table):
@@ -133,6 +136,7 @@ class MainView(QMainWindow):
         if self.is_item_clicked:
             suspend_process(self)
             self.print_sorted_tables()
+            self.calculate_global_sec_mem_used()
         else:
             show_error_message( self, "Error", "Debe seleccionar un proceso de memoria principal para suspenderlo." )
     
@@ -140,12 +144,14 @@ class MainView(QMainWindow):
         if self.is_item_clicked:
             assign_suspended_proc_to_pri_mem(self)
             self.print_sorted_tables()
+            self.calculate_global_sec_mem_used()
         else:
             show_error_message( self, "Error", "Debe seleccionar un proceso de memoria secundaria para asignarlo a la memoria principal.")
     def end_process_table(self):
         if self.is_item_clicked:
             end_process(self)
             self.print_sorted_tables()
+            self.calculate_global_prim_mem_used()
         else:
             show_error_message( self,  "Error", "Debe seleccionar un proceso de memoria principal para eliminarlo.")
 
@@ -171,6 +177,7 @@ class MainView(QMainWindow):
                         self.pri_mem.current_size -= 1
                         if any(block.data is not None for block in self.sec_mem.block_memory_list):
                             self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = assign_page_to_pri_mem(self)
+                        self.calculate_global_sec_mem_used()
                         self.print_sorted_tables()
                     else:
                         if block.data.is_running == False:
@@ -202,11 +209,13 @@ class MainView(QMainWindow):
         for block in self.pri_mem.block_memory_list:
             if block.data is not None:
                 memory_used += block.data.size
+        self.label_used__pri_mem.setText(str(memory_used)+" bytes")
         self.global_state.pri_memory_used = memory_used
     
-    def add_global_sec_mem_used(self):
+    def calculate_global_sec_mem_used(self):
         memory_used = 0
         for block in self.sec_mem.block_memory_list:
             if block.data is not None:
-                momory_used += block.data.size
+                memory_used += block.data.size
+        self.label_used__sec_mem.setText(str(memory_used)+" bytes")
         self.global_state.sec_memory_used = memory_used
