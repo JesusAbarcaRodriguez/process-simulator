@@ -33,6 +33,7 @@ class MainView(QMainWindow):
         self.num_process = 1
         self.selected_process = None
         self.global_state = GlobalState()
+        self.process_aux = None
 
         create_secondary_table(self)
         create_primary_table(self)
@@ -72,7 +73,7 @@ class MainView(QMainWindow):
         if not self.started:
             show_error_message(self, "Error", "Debe iniciar el programa primero.")
         else:
-            self.proc = create_process(self,True)
+            self.process_aux = create_process(self,True)
             if self.pri_mem.is_memory_full_to_process() == False:
                 self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(self.proc)
                 self.calculate_global_prim_mem_used()
@@ -81,6 +82,8 @@ class MainView(QMainWindow):
                 self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = create_pages(self)
                 self.print_tables()
                 self.calculate_global_sec_mem_used()
+                time.sleep(1)
+            self.process_aux = None
             self.print_sorted_tables()
 
     def clear_table(self, table):

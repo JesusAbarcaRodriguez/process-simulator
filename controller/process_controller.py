@@ -52,9 +52,9 @@ def create_process(self,is_proc):
     priority_rand = random.randint(1, 10)
     if is_proc:
         name = f"Process {self.num_process}"
-        self.proc = Process(self.num_process, ProcessState.RUNNING, 100, name, priority_rand, 0, 0, to_finish_time_rand)
+        self.proc = Process(self.num_process, ProcessState.RUNNING, self.num_process*50, name, priority_rand, 0, 0, to_finish_time_rand)
     else:
         name = f"Services {self.num_process}"
-        self.proc = Process(self.num_process, ProcessState.RUNNING, 100, name, priority_rand, 0, 0, float('inf'))
+        self.proc = Process(self.num_process, ProcessState.RUNNING, self.num_process*50, name, priority_rand, 0, 0, float('inf'))
     self.proc.is_running = False
     return self.proc
