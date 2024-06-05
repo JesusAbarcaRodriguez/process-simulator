@@ -3,6 +3,7 @@
 #   principal memory
 #   secondary memory
 #   virtual memory
+from util.message import show_error_message
 from util.states import ProcessState
 
 class Memory:
@@ -29,18 +30,20 @@ class Memory:
             return True
         return False
     def is_memory_full_to_pages(self):
-        if self.current_size == self.max_size:
+        if self.current_size >= self.max_size:
             return True
         return False
     # place type of memory in param
-    def assign_proc_to_pri_mem(self, process):
+    def assign_proc_to_pri_mem(self,data):
+        is_assigned = False
         for block in self.block_memory_list:
-            if block.data is None and block.size >= process.size:
-                block.data = process
+            if block.data is None and block.size >= data.size:
+                block.data = data
                 self.current_size += 1
                 block.is_process = True
+                is_assigned = True
                 break
-        return self.block_memory_list
+        return self.block_memory_list,is_assigned
     
     def assign_proc_to_sec_mem(self, process):
         for block in self.block_memory_list:

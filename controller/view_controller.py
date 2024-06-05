@@ -7,10 +7,12 @@ from model.page import create_pages
 from controller.process_controller import create_process, end_process, suspend_process,assign_suspended_proc_to_pri_mem
 from PyQt5 import QtWidgets
 from util.sorts import first_order, second_order, third_order
+from util.states import ProcessState
 from view.table.table import create_primary_table, create_secondary_table
 from controller.memory_controller import assign_page_to_pri_mem, initialize_primary_memory, initialize_secondary_memory
 from util.message import show_error_message
 from util.global_state import GlobalState
+from PyQt5 import QtWidgets, QtGui
 class MainView(QMainWindow):
 
     def __init__(self):  # this
@@ -64,7 +66,9 @@ class MainView(QMainWindow):
         else:
             self.service = create_process(self,False)
             if self.pri_mem.is_memory_full_to_process() == False:
-                self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(self.service)
+                self.pri_mem.block_memory_list,is_assigned = self.pri_mem.assign_proc_to_pri_mem(self.service)
+                if not is_assigned:
+                    show_error_message(self, "Error", "No hay un bloque de memoria con el tamaño suficiente para asignar el proceso" + " El tamaño del proceso entrante es de " + str(self.service.size))
                 time.sleep(1)
             else:
                 show_error_message(self, "Error", "No hay suficiente memoria principal para asignar el servicio.")
@@ -75,8 +79,10 @@ class MainView(QMainWindow):
         else:
             self.process_aux = create_process(self,True)
             if self.pri_mem.is_memory_full_to_process() == False:
-                self.pri_mem.block_memory_list = self.pri_mem.assign_proc_to_pri_mem(self.proc)
+                self.pri_mem.block_memory_list, is_assigned = self.pri_mem.assign_proc_to_pri_mem(self.process_aux)
                 self.calculate_global_prim_mem_used()
+                if not is_assigned:
+                    show_error_message(self, "Error", "No hay un bloque de memoria con el tamaño suficiente para asignar el proceso" + " El tamaño del proceso entrante es de " + str(self.process_aux.size))
                 time.sleep(1)
             else:
                 self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = create_pages(self)
@@ -95,23 +101,38 @@ class MainView(QMainWindow):
 
     def add_row_to_table(self, table, row, block):
         if block.is_process:
-            table.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.data.name)))
-            table.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.data.size)))
-            table.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.data.pid)))
-            table.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.data.state.value)))
-            table.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.data.priority)))
-            table.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.data.executed_time)))
-            table.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.data.waiting_time)))
-            table.setItem(row, 7, QtWidgets.QTableWidgetItem(str(block.data.to_finish_time)))
+            table.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.block_id) + "/" + str(block.size)))
+            table.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.data.name)))
+            table.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.data.size)))
+            table.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.data.pid)))
+            table.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.data.state.value)))
+            table.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.data.priority)))
+            table.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.data.executed_time)))
+            table.setItem(row, 7, QtWidgets.QTableWidgetItem(str(block.data.waiting_time)))
+            table.setItem(row, 8, QtWidgets.QTableWidgetItem(str(block.data.to_finish_time)))
         else:
-            table.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.data.page_id)))
-            table.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.data.size)))
-            table.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.data.page_number)))
-            table.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.data.process.state.value)))
-            table.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.data.process.priority)))
-            table.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.data.executed_time)))
-            table.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.data.waiting_time)))
-            table.setItem(row, 7, QtWidgets.QTableWidgetItem(str(block.data.to_finish_time)))
+            table.setItem(row, 0, QtWidgets.QTableWidgetItem(str(block.block_id) + "/" + str(block.size)))
+            table.setItem(row, 1, QtWidgets.QTableWidgetItem(str(block.data.page_id)))
+            table.setItem(row, 2, QtWidgets.QTableWidgetItem(str(block.data.size)))
+            table.setItem(row, 3, QtWidgets.QTableWidgetItem(str(block.data.page_number)))
+            table.setItem(row, 4, QtWidgets.QTableWidgetItem(str(block.data.process.state.value)))
+            table.setItem(row, 5, QtWidgets.QTableWidgetItem(str(block.data.process.priority)))
+            table.setItem(row, 6, QtWidgets.QTableWidgetItem(str(block.data.executed_time)))
+            table.setItem(row, 7, QtWidgets.QTableWidgetItem(str(block.data.waiting_time)))
+            table.setItem(row, 8, QtWidgets.QTableWidgetItem(str(block.data.to_finish_time)))
+        for col in range(table.columnCount()):
+            item = table.item(row, col)
+            if item is not None:
+                color = QtGui.QColor(0, 0, 0)
+                if block.data.state == ProcessState.TERMINATED:
+                    color = QtGui.QColor(255, 0, 0)  # Color rojo para procesos terminados
+                elif block.data.state == ProcessState.SUSPENDED_BLOCKED:
+                    color = QtGui.QColor(255, 165, 0)   
+                elif block.is_process:
+                    color = QtGui.QColor(0, 0, 139)  # Color azul para procesos
+                else:
+                    color = QtGui.QColor(0, 100, 0)  # Color verde para páginas
+                item.setForeground(color)
 
     def add_process_table(self, table, block_primary_list):
         self.clear_table(table)
@@ -180,6 +201,7 @@ class MainView(QMainWindow):
                         self.pri_mem.current_size -= 1
                         if any(block.data is not None for block in self.sec_mem.block_memory_list):
                             self.pri_mem.block_memory_list, self.sec_mem.block_memory_list = assign_page_to_pri_mem(self)
+                        self.print_tables()
                         self.calculate_global_sec_mem_used()
                         self.print_sorted_tables()
                     else:
@@ -205,6 +227,9 @@ class MainView(QMainWindow):
     
     def print_tables(self):
         self.add_process_table(self.table_memory_principal, self.pri_mem.block_memory_list)
+        blocks_with_data = [block for block in self.sec_mem.block_memory_list if block.data is not None]
+        blocks_without_data = [block for block in self.sec_mem.block_memory_list if block.data is None]
+        self.sec_mem.block_memory_list = blocks_with_data + blocks_without_data
         self.add_process_table(self.table_memory_secondary, self.sec_mem.block_memory_list)
     
     def calculate_global_prim_mem_used(self):

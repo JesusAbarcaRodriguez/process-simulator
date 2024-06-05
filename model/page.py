@@ -36,6 +36,10 @@ class Page:
     def terminate(self):
         if self.state == ProcessState.RUNNING:
             self.state = ProcessState.TERMINATED
+    
+    def activate(self):
+        if self.state == ProcessState.SUSPENDED_BLOCKED:
+            self.state = ProcessState.RUNNING
             
     #   todo: timeout -> (running) -> (ready)
     #   calculate to_finish_time

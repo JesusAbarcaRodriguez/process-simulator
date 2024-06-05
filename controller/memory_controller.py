@@ -1,3 +1,4 @@
+import random
 from model.memory import Memory
 from model.block_memory import BlockMemory
 from controller.process_controller import create_processes
@@ -24,7 +25,8 @@ def create_memory_blocks(self, num_blocks,is_primary_memory):
     self.block_list = []
     sum_memory = 0
     for i in range(1, num_blocks + 1):
-        block_size = 64*i
+        sizes = [2**i for i in range(5, 10)]  # Genera las potencias de 2: 2, 4, 8, ..., 512
+        block_size = random.choice(sizes)
         block = BlockMemory(i, block_size, None)
         sum_memory += block_size
         self.block_list.append(block)

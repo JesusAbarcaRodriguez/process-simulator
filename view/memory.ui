@@ -55,7 +55,7 @@ border: none;
 }</string>
             </property>
             <property name="text">
-             <string>Memoria Secundaria</string>
+             <string>Memoria Principal</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -93,7 +93,7 @@ border: none;
 }</string>
             </property>
             <property name="text">
-             <string>Memoria Principal</string>
+             <string>Memoria Secundaria</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
