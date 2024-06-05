@@ -17,7 +17,11 @@ class FigureOne(FigureCanvas):
         self.ax.set_ylim(0, 1024)
         self.ax.set_xlim(0, 150)
         self.ax.set_xticks([])
-        self.ax.set_yticks([128, 256, 384, 512, 640, 768, 896, 1024])
+        if self.is_pri_mem:
+            self.ax.set_yticks(range(0, self.global_state.block_prim_memory_size, 512))
+        else:
+            self.ax.set_yticks(range(0, self.global_state.block_sec_memory_size, self.global_state.block_sec_memory_size//6))
+    
 
         self.memory_text = self.ax.text(0.5, -0.1, '', transform=self.ax.transAxes, ha='center')
         
