@@ -584,11 +584,6 @@ font: 14 12pt &quot;Arial Black&quot;;</string>
                   </column>
                   <column>
                    <property name="text">
-                    <string>New Column</string>
-                   </property>
-                  </column>
-                  <column>
-                   <property name="text">
                     <string>Tamaño</string>
                    </property>
                   </column>
