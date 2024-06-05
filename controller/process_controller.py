@@ -43,7 +43,7 @@ def end_process(self):
         for block in self.pri_mem.block_memory_list:
             if block.data is not None:
                 if block.data.pid == self.id_process:
-                    block.data.state = ProcessState.TERMINATED
+                    block.data.terminate()
                     block.data = None
                     break
         self.add_process_table(self.table_memory_principal,self.pri_mem.block_memory_list)

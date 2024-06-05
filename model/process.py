@@ -17,6 +17,8 @@ class Process:
         self.to_finish_time = to_finish_time
         self.executed_time = executed_time
         self.waiting_time = waiting_time
+        self._end_thread = threading.Event()
+
         
         # self.lock = threading.Lock()
 
@@ -31,8 +33,12 @@ class Process:
 
     #   Starts a thread to execute the process
     def run(self):
-        thread = threading.Thread(target=self.execute)
-        thread.start()
+        self.thread = threading.Thread(target=self.execute)
+        self.thread.start()
+    
+    def stop(self):
+        self._end_thread.set()
+        self.thread.join()
 
     #   todo: timeout -> (running) -> (ready)
     #   calculate to_finish_time
@@ -54,6 +60,7 @@ class Process:
     def terminate(self):
         if self.state == ProcessState.RUNNING:
             self.state = ProcessState.TERMINATED
+            
 
     def activate(self):
         if self.state == ProcessState.SUSPENDED_BLOCKED:

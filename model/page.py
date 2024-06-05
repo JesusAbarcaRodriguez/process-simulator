@@ -15,6 +15,7 @@ class Page:
         self.executed_time = executed_time
         self.waiting_time = waiting_time
         self.state = ProcessState(state)
+        self._end_thread = threading.Event()
 
     def admit(self):
         if self.state == ProcessState.RUNNING:
@@ -28,8 +29,12 @@ class Page:
 
     #   Starts a thread to execute the process
     def run(self):
-        thread = threading.Thread(target=self.execute)
-        thread.start()
+        self.thread = threading.Thread(target=self.execute)
+        self.thread.start()
+    
+    def stop(self):
+        self._end_thread.set()
+        self.thread.join()
 
     #   Terminate the process
     #   Changes the state from running to terminated
